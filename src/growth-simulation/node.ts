@@ -1,6 +1,6 @@
 import Vector2 from "./vector2";
 
-export default class Particle {
+export default class Node {
     position: Vector2 = new Vector2();
     velocity: Vector2 = new Vector2();
     private acceleration: Vector2 = new Vector2();

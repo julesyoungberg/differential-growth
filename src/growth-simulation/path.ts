@@ -1,15 +1,15 @@
-import Particle from './particle';
+import Node from './node';
 import Vector2 from './vector2';
 
 export default class Path {
-    points: Particle[] = [];
+    nodes: Node[] = [];
 
-    constructor(points?: Particle[]) {
-        this.points = points || [];
+    constructor(nodes?: Node[]) {
+        this.nodes = nodes || [];
     }
 
     update() {
-        // update each particle in path
+        // update each node in path
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -18,9 +18,9 @@ export default class Path {
         ctx.lineWidth = 2;
         ctx.strokeStyle = '#ffffff';
 
-        for (let i = 1; i < this.points.length; i++) {
-            const start = this.points[i - 1].position;
-            const end = this.points[i].position;
+        for (let i = 1; i < this.nodes.length; i++) {
+            const start = this.nodes[i - 1].position;
+            const end = this.nodes[i].position;
             ctx.moveTo(start.x, start.y);
             ctx.lineTo(end.x, end.y);
             ctx.stroke();
@@ -30,8 +30,8 @@ export default class Path {
     }
 
     static horizontal(width: number, height: number) {
-        const start = new Particle(new Vector2(0, height / 2.0));
-        const end = new Particle(new Vector2(width, height / 2.0));
+        const start = new Node(new Vector2(0, height / 2.0));
+        const end = new Node(new Vector2(width, height / 2.0));
         return new Path([start, end]);
     }
 }
