@@ -7,7 +7,7 @@ import theme from '../theme';
 export class ButtonElement extends LitElement {
     static styles = css`
         button {
-            background-color: ${theme.colors.greyLighter};
+            background-color: ${theme.colors.greyDark};
             border-color: ${theme.colors.greyLight};
             border-width: 1px;
             border-radius: ${theme.borderRadius};

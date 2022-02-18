@@ -8,7 +8,7 @@ export class SettingsIcon extends LitElement {
     static styles = css`
         svg {
             width: 28px;
-            fill: ${theme.colors.greyDark};
+            fill: ${theme.colors.text};
         }
 
         svg:hover {

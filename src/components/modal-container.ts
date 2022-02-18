@@ -23,7 +23,7 @@ export class ModalContainer extends LitElement {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: ${theme.colors.greyLighter};
+            background-color: ${theme.colors.overlay};
         }
 
         .modal-wrapper {
@@ -31,9 +31,9 @@ export class ModalContainer extends LitElement {
             max-width: 600px;
             height: 100%;
             max-height: 400px;
-            background-color: ${theme.colors.greyLight};
+            background-color: ${theme.colors.greyDark};
             border-radius: ${theme.borderRadius};
-            color: white;
+            color: ${theme.colors.text};
             padding: 20px;
         }
     `;

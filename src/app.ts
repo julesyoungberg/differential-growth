@@ -37,7 +37,6 @@ export class MyApp extends LitElement {
     `;
 
     firstUpdated(): void {
-        super.connectedCallback();
         this.growthSimulation = new GrowthSimulation(this.canvas!);
     }
 
