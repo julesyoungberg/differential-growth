@@ -10,7 +10,7 @@ export class ButtonElement extends LitElement {
             background-color: ${theme.colors.greyLighter};
             border-color: ${theme.colors.greyLight};
             border-width: 1px;
-            border-radius: 4px;
+            border-radius: ${theme.borderRadius};
         }
     `;
 

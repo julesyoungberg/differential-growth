@@ -5,8 +5,8 @@ import './settings-icon';
 
 @customElement('icon-element')
 export class IconElement extends LitElement {
-    @property()
-    iconName: string = "settings";
+    @property({ type: String })
+    iconName = 'settings';
 
     render() {
         /** @todo add more icons */
