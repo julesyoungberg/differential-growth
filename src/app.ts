@@ -1,14 +1,22 @@
 import { css, html, LitElement } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, query, state } from 'lit/decorators.js';
 
 import './components/button-element';
 import './components/settings-modal';
 import './components/icons/settings-icon';
+import GrowthSimulation from './growth-simulation';
+
+const CANVAS_ID = "simulation-canvas";
 
 @customElement('my-app')
 export class MyApp extends LitElement {
     @state()
     private settingsOpen: boolean = false;
+
+    @query(`#${CANVAS_ID}`)
+    private canvas?: HTMLCanvasElement;
+
+    private growthSimulation?: GrowthSimulation;
 
     static styles = css`
         .settings-button {
@@ -21,7 +29,17 @@ export class MyApp extends LitElement {
             position: relative;
             bottom: -1px;
         }
+
+        canvas {
+            width: 853px;
+            height: 480px;
+        }
     `;
+
+    firstUpdated(): void {
+        super.connectedCallback();
+        this.growthSimulation = new GrowthSimulation(this.canvas!);
+    }
 
     private openSettings() {
         this.settingsOpen = true;
@@ -41,6 +59,7 @@ export class MyApp extends LitElement {
                 @closed=${this.closeSettings}
             ></settings-modal>
             <h1>Differential Growth</h1>
+            <canvas id=${CANVAS_ID}></canvas>
         `;
     }
 }
