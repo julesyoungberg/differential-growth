@@ -10,7 +10,7 @@ export default class GrowthSimulation {
     constructor(readonly canvas: HTMLCanvasElement) {
         this.width = this.canvas.width;
         this.height = this.canvas.height;
-        this.ctx = canvas.getContext("2d");
+        this.ctx = canvas.getContext('2d');
         this.ctx!.imageSmoothingEnabled = true;
         this.startSimulation();
     }
@@ -36,7 +36,7 @@ export default class GrowthSimulation {
 
         this.ctx!.save();
         this.ctx!.clearRect(0, 0, this.width, this.height);
-        this.ctx!.fillStyle = "rgba(0,0,0,1)";
+        this.ctx!.fillStyle = 'rgba(0,0,0,1)';
         this.ctx!.fillRect(0, 0, this.width, this.height);
 
         for (const path of this.paths) {

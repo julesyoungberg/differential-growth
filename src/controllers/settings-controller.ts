@@ -1,4 +1,4 @@
-import { ReactiveController, ReactiveControllerHost } from "lit";
+import { ReactiveController, ReactiveControllerHost } from 'lit';
 
 export default class SettingsController implements ReactiveController {
     /** @todo build settings schema, act as config store */

@@ -6,7 +6,7 @@ import './components/settings-modal';
 import './components/icons/settings-icon';
 import GrowthSimulation from './growth-simulation';
 
-const CANVAS_ID = "simulation-canvas";
+const CANVAS_ID = 'simulation-canvas';
 
 @customElement('my-app')
 export class MyApp extends LitElement {
