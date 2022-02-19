@@ -65,4 +65,21 @@ export default class Path {
 
         return new Path(nodes);
     }
+
+    static circle(width: number, height: number) {
+        const nodes = [];
+        const center = new Vector2(width / 2.0, height / 2.0);
+        const nNodes = 10.0;
+        const radius = 10.0;
+
+        for (let i = 0; i < nNodes; i++) {
+            const angle = i / (nNodes - 1) * Math.PI * 2;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            const node = new Node(new Vector2(center.x + x, center.y + y));
+            nodes.push(node);
+        }
+
+        return new Path(nodes);
+    }
 }

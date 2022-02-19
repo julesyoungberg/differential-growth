@@ -31,7 +31,7 @@ export class ModalContainer extends LitElement {
             max-width: 600px;
             height: 100%;
             max-height: 400px;
-            background-color: ${theme.colors.greyDark};
+            background-color: ${theme.colors.background};
             border-radius: ${theme.borderRadius};
             color: ${theme.colors.text};
             padding: 20px;

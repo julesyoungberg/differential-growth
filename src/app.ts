@@ -3,8 +3,12 @@ import { customElement, query, state } from 'lit/decorators.js';
 
 import './components/button-element';
 import './components/settings-modal';
+import './components/icons/pause-icon';
+import './components/icons/play-icon';
 import './components/icons/settings-icon';
 import GrowthSimulation from './growth-simulation';
+
+import theme from './theme';
 
 const CANVAS_ID = 'simulation-canvas';
 
@@ -16,13 +20,15 @@ export class MyApp extends LitElement {
     @query(`#${CANVAS_ID}`)
     private canvas?: HTMLCanvasElement;
 
-    private growthSimulation?: GrowthSimulation;
+    private growthSimulation = new GrowthSimulation(this);
 
     static styles = css`
-        .settings-button {
-            position: fixed;
-            right: 10px;
-            top: 10px;
+        h1 {
+            color: ${theme.colors.text};
+        }
+
+        .toolbar {
+            margin-bottom: 18px;
         }
 
         settings-icon {
@@ -37,7 +43,12 @@ export class MyApp extends LitElement {
     `;
 
     firstUpdated(): void {
-        this.growthSimulation = new GrowthSimulation(this.canvas!);
+        if (this.canvas) {
+            this.growthSimulation.setCanvas(this.canvas);
+            setTimeout(() => this.growthSimulation.stopSimulation(), 2000);
+        } else {
+            throw Error('No canvas found');
+        }
     }
 
     private openSettings() {
@@ -48,16 +59,33 @@ export class MyApp extends LitElement {
         this.settingsOpen = false;
     }
 
+    private toggleSimulation() {
+        if (this.growthSimulation?.isRunning()) {
+            this.growthSimulation?.stopSimulation();
+        } else {
+            this.growthSimulation?.startSimulation();
+        }
+    }
+
     render() {
+        const playPauseIcon = this.growthSimulation?.isRunning()
+            ? html`<pause-icon></pause-icon>`
+            : html`<play-icon></play-icon>`;
+
         return html`
-            <button-element class="settings-button" @click=${this.openSettings}>
-                <settings-icon></settings-icon>
-            </button-element>
             <settings-modal
                 ?open=${this.settingsOpen}
                 @closed=${this.closeSettings}
             ></settings-modal>
             <h1>Differential Growth</h1>
+            <div class="toolbar">
+                <button-element @click=${this.toggleSimulation}>
+                    ${playPauseIcon}
+                </button-element>
+                <button-element @click=${this.openSettings}>
+                    <settings-icon></settings-icon>
+                </button-element>
+            </div>
             <canvas id=${CANVAS_ID}></canvas>
         `;
     }

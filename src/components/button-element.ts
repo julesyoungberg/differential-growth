@@ -8,8 +8,7 @@ export class ButtonElement extends LitElement {
     static styles = css`
         button {
             background-color: ${theme.colors.greyDark};
-            border-color: ${theme.colors.greyLight};
-            border-width: 1px;
+            border-width: 0;
             border-radius: ${theme.borderRadius};
         }
     `;

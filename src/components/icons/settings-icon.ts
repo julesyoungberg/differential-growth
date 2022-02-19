@@ -1,20 +1,11 @@
-import { css, html, LitElement } from 'lit';
+import { html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-import theme from '../../theme';
+import { baseSvgIconStyles } from './icon-styles';
 
 @customElement('settings-icon')
 export class SettingsIcon extends LitElement {
-    static styles = css`
-        svg {
-            width: 28px;
-            fill: ${theme.colors.text};
-        }
-
-        svg:hover {
-            cursor: pointer;
-        }
-    `;
+    static styles = baseSvgIconStyles;
 
     render() {
         return html`
