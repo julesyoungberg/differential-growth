@@ -74,7 +74,7 @@ export default class GrowthSimulation implements ReactiveController {
         }
     }
 
-    private render() {
+    private async render() {
         // exit if stopped
         if (!this.running) {
             return;
@@ -90,6 +90,8 @@ export default class GrowthSimulation implements ReactiveController {
         for (const path of this.paths) {
             path.draw(this.ctx!);
         }
+
+        // await new Promise(r => setTimeout(r, 2000));
 
         // request next animation frame
         requestAnimationFrame(this.render.bind(this));

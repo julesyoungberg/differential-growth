@@ -38,7 +38,7 @@ export default class Path {
     draw(ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.beginPath();
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         ctx.strokeStyle = '#ffffff';
 
         for (let i = 1; i < this.nodes.length; i++) {
@@ -70,7 +70,7 @@ export default class Path {
         const nodes = [];
         const center = new Vector2(width / 2.0, height / 2.0);
         const nNodes = 10.0;
-        const radius = 10.0;
+        const radius = 30.0;
 
         for (let i = 0; i < nNodes; i++) {
             const angle = i / (nNodes - 1) * Math.PI * 2;

@@ -4,7 +4,7 @@ export default class Node {
     position: Vector2 = new Vector2();
     velocity: Vector2 = new Vector2();
     private acceleration: Vector2 = new Vector2();
-    private maxSpeed = 2.0;
+    private maxSpeed = 0.5;
     private maxForce = 0.2;
     private desiredSeparation = 10.0;
     private separationWeight = 1.1;
