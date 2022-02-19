@@ -1,37 +1,53 @@
 import RBush from 'rbush';
-// import knn from 'rbush-knn';
 
 import Node from './node';
 import Path from './path';
+import Vector2 from './vector2';
 
 export type RBushItem = {
-    minX: number;
-    minY: number;
-    maxX: number;
-    maxY: number;
+    x: number;
+    y: number;
     node: Node;
 };
 
 function rbushItemFromNode(node: Node) {
     return {
-        minX: node.position.x,
-        minY: node.position.y,
-        maxX: node.position.x,
-        maxY: node.position.y,
+        x: node.position.x,
+        y: node.position.y,
         node,
     };
 }
 
 export default class MyRBush extends RBush<RBushItem> {
-    insertNode(node: Node)  {
-        super.insert(rbushItemFromNode(node));
+    toBBox(item: RBushItem) {
+        return { minX: item.x, minY: item.y, maxX: item.x, maxY: item.y };
+    }
+
+    compareMinX(a: RBushItem, b: RBushItem) {
+        return a.x - b.x;
+    }
+
+    compareMinY(a: RBushItem, b: RBushItem) {
+        return a.y - b.y;
+    }
+
+    insertNodes(nodes: Node[])  {
+        this.load(nodes.map(rbushItemFromNode));
     }
 
     insertPaths(paths: Path[]) {
-        for (const path of paths) {
-            for (const node of path.nodes) {
-                this.insertNode(node);
-            }
-        }
+        const items = paths.reduce((acc: RBushItem[], path: Path) => {
+            return acc.concat(path.nodes.map(rbushItemFromNode));
+        }, []);
+
+        this.load(items);
+    }
+
+    searchNear(point: Vector2, radius=50) {
+        const minX = Math.min(point.x - radius, point.x + radius);
+        const maxX = Math.max(point.x - radius, point.x + radius);
+        const minY = Math.min(point.y - radius, point.y + radius);
+        const maxY = Math.max(point.y - radius, point.y + radius);
+        return this.search({ minX, minY, maxX, maxY });
     }
 }

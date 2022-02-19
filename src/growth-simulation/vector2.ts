@@ -22,10 +22,49 @@ export default class Vector2 {
     add(other: Vector2) {
         this.x += other.x;
         this.y += other.y;
+        return this;
     }
 
-    subtract(other: Vector2) {
+    sub(other: Vector2) {
         this.x -= other.x;
         this.y -= other.y;
+        return this;
+    }
+
+    mul(scale: number) {
+        this.x *= scale;
+        this.y *= scale;
+        return this;
+    }
+
+    div(den: number) {
+        this.x /= den;
+        this.y /= den;
+        return this;
+    }
+
+    limit(mag: number) {
+        const length = this.length();
+        if (length > mag) {
+            this.normalize();
+            this.mul(mag);
+        }
+        return this;
+    }
+
+    distance(other: Vector2) {
+        return Vector2.sub(this, other).length();
+    }
+
+    static add(a: Vector2, b: Vector2) {
+        const newVec = new Vector2(a.x, a.y);
+        newVec.add(b);
+        return newVec;
+    }
+
+    static sub(a: Vector2, b: Vector2) {
+        const newVec = new Vector2(a.x, a.y);
+        newVec.sub(b);
+        return newVec;
     }
 }

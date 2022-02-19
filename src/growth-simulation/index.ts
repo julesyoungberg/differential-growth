@@ -21,17 +21,36 @@ export default class GrowthSimulation {
         this.paths = [Path.horizontal(this.width, this.height)];
         this.rbush = new RBush();
         this.rbush.insertPaths(this.paths);
+        console.log(this.rbush);
+        console.log(this.rbush.all());
     }
 
     private update() {
+        const searchRadius = 100;
+
         // update the simulation
         for (const path of this.paths) {
-            path.grow();
+            const newNodes = path.grow();
+            if (newNodes.length > 0) {
+                this.rbush?.insertNodes(newNodes);
+            }
 
-            /** @todo */
-            // attract
-            // repulse
-            // align to halfway between neighbors if there
+            if (!this.rbush) {
+                continue;
+            }
+
+            for (let i = 0; i < path.nodes.length; i++) {
+                const node = path.nodes[i];
+                const neighbors = this.rbush.searchNear(node.position, searchRadius);
+                const neighborNodes = neighbors.map(n => n.node);
+                node.avoid(neighborNodes);
+
+                if (i > 0 && i < path.nodes.length - 1) {
+                    node.align(path.nodes[i - 1], path.nodes[i + 1]);
+                }
+
+                node.update();
+            }
         }
     }
 
