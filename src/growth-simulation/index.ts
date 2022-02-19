@@ -1,10 +1,12 @@
 import Path from './path';
+import RBush from './rbush';
 
 export default class GrowthSimulation {
     private width: number = 0;
     private height: number = 0;
     private ctx: CanvasRenderingContext2D | null = null;
     private paths: Path[] = [];
+    private rbush?: RBush;
     private running: boolean = true;
 
     constructor(readonly canvas: HTMLCanvasElement) {
@@ -17,12 +19,19 @@ export default class GrowthSimulation {
 
     private setup() {
         this.paths = [Path.horizontal(this.width, this.height)];
+        this.rbush = new RBush();
+        this.rbush.insertPaths(this.paths);
     }
 
     private update() {
         // update the simulation
         for (const path of this.paths) {
-            path.update();
+            path.grow();
+
+            /** @todo */
+            // attract
+            // repulse
+            // align to halfway between neighbors if there
         }
     }
 

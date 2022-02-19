@@ -8,8 +8,9 @@ export default class Path {
         this.nodes = nodes || [];
     }
 
-    update() {
-        // update each node in path
+    grow() {
+        // add nodes randomly
+        /** @todo */
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -31,7 +32,8 @@ export default class Path {
 
     static horizontal(width: number, height: number) {
         const start = new Node(new Vector2(0, height / 2.0));
+        const middle = new Node(new Vector2(width / 2.0, height / 2.0));
         const end = new Node(new Vector2(width, height / 2.0));
-        return new Path([start, end]);
+        return new Path([start, middle, end]);
     }
 }
