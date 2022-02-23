@@ -6,8 +6,9 @@ export default class Node {
     private acceleration: Vector2 = new Vector2();
     private maxSpeed = 0.5;
     private maxForce = 0.2;
-    private desiredSeparation = 10.0;
+    private desiredSeparation = 20.0;
     private separationWeight = 1.1;
+    private alignmentWeight = 1.0;
 
     constructor(position?: Vector2, velocity?: Vector2) {
         if (position) {
@@ -68,6 +69,6 @@ export default class Node {
         desiredVelocity.mul(this.maxSpeed);
         const steer = Vector2.sub(desiredVelocity, this.velocity);
         steer.limit(this.maxForce);
-        return steer;
+        this.addForce(steer.mul(this.alignmentWeight));
     }
 }

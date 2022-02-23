@@ -14,20 +14,24 @@ export default class Path {
     }
 
     grow() {
-        const newNodes = [];
+        const newNodes: Node[] = [];
 
-        for (let i = this.nodes.length - 1; i > 0; i--) {
-            const a = this.nodes[i - 1];
+        for (let i = this.nodes.length - 1; i >= 0; i--) {
+            const prevIndex = i === 0 ? this.nodes.length - 1 : i - 1;
+            const a = this.nodes[prevIndex];
             const b = this.nodes[i];
             const dist = Vector2.sub(a.position, b.position).length();
 
             if (dist > this.maxEdgeLength) {
                 const start = this.nodes.slice(0, i);
                 const end = this.nodes.slice(i);
-                const newX = (start[start.length - 1].position.x + end[0].position.x) / 2.0;
-                const newY = (start[start.length - 1].position.y + end[0].position.y) / 2.0;
-                const newNode = new Node(new Vector2(newX, newY));
-                newNodes.push(newNode);
+                const reordered = end.concat(start);
+                const dir1 = Vector2.sub(reordered[0].position, reordered[1].position);
+                const dir2 = Vector2.sub(reordered[reordered.length - 1].position, reordered[reordered.length - 2].position);
+                const dir = Vector2.add(dir1, dir2).mul(0.5);
+                const midX = (reordered[reordered.length - 1].position.x + reordered[0].position.x) / 2.0;
+                const midY = (reordered[reordered.length - 1].position.y + reordered[0].position.y) / 2.0;
+                const newNode = new Node(new Vector2(midX + dir.x, midY + dir.y));
                 this.nodes = [...start, newNode, ...end];
             }
         }
@@ -41,8 +45,8 @@ export default class Path {
         ctx.lineWidth = 1;
         ctx.strokeStyle = '#ffffff';
 
-        for (let i = 1; i < this.nodes.length; i++) {
-            const start = this.nodes[i - 1].position;
+        for (let i = 0; i < this.nodes.length; i++) {
+            const start = this.nodes[i === 0 ? this.nodes.length - 1 : i - 1].position;
             const end = this.nodes[i].position;
             ctx.moveTo(start.x, start.y);
             ctx.lineTo(end.x, end.y);
@@ -73,7 +77,7 @@ export default class Path {
         const radius = 30.0;
 
         for (let i = 0; i < nNodes; i++) {
-            const angle = i / (nNodes - 1) * Math.PI * 2;
+            const angle = i / (nNodes) * Math.PI * 2;
             const x = Math.cos(angle) * radius;
             const y = Math.sin(angle) * radius;
             const node = new Node(new Vector2(center.x + x, center.y + y));

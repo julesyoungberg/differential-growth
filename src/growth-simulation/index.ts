@@ -91,7 +91,7 @@ export default class GrowthSimulation implements ReactiveController {
             path.draw(this.ctx!);
         }
 
-        // await new Promise(r => setTimeout(r, 2000));
+        this.ctx!.restore();
 
         // request next animation frame
         requestAnimationFrame(this.render.bind(this));

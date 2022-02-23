@@ -37,8 +37,8 @@ export class MyApp extends LitElement {
         }
 
         canvas {
-            width: 853px;
-            height: 480px;
+            width: 1000px;
+            height: 700px;
         }
     `;
 

@@ -17,6 +17,7 @@ export default class Vector2 {
             this.x /= length;
             this.y /= length;
         }
+        return this;
     }
 
     add(other: Vector2) {
