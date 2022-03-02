@@ -18,7 +18,12 @@ export class RangeSlider extends LitElement {
     @property({ type: Number })
     value = 0.5;
 
-    static styles = css``;
+    static styles = css`
+        :host {
+            display: flex;
+            flex-direction: column;
+        }
+    `;
 
     private onChange(event: InputEvent) {
         const value = (event.target as HTMLInputElement).value;
@@ -31,14 +36,14 @@ export class RangeSlider extends LitElement {
         return html`
             <label>
                 ${this.label}
-                <input
-                    type="range"
-                    min=${this.min}
-                    max=${this.max}
-                    step=${this.step}
-                    @change=${this.onChange}
-                />
             </label>
+            <input
+                type="range"
+                min=${this.min}
+                max=${this.max}
+                step=${this.step}
+                @change=${this.onChange}
+            />
         `;
     }
 }
