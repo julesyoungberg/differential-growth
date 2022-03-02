@@ -2,6 +2,7 @@ import { ReactiveController, ReactiveControllerHost } from 'lit';
 
 import Path from './path';
 import RBush from './rbush';
+import { defaultSettings, Settings } from './settings';
 
 export default class GrowthSimulation implements ReactiveController {
     private width: number = 0;
@@ -11,6 +12,7 @@ export default class GrowthSimulation implements ReactiveController {
     private paths: Path[] = [];
     private rbush?: RBush;
     private running: boolean = true;
+    private settings: Settings = defaultSettings;
 
     constructor(readonly host: ReactiveControllerHost) {
         host.addController(this);
@@ -46,11 +48,9 @@ export default class GrowthSimulation implements ReactiveController {
     }
 
     private update() {
-        const searchRadius = 100;
-
         // update the simulation
         for (const path of this.paths) {
-            const newNodes = path.grow();
+            const newNodes = path.grow(this.settings.maxEdgeLength);
             if (newNodes.length > 0) {
                 this.rbush?.insertNodes(newNodes);
             }
@@ -61,15 +61,19 @@ export default class GrowthSimulation implements ReactiveController {
 
             for (let i = 0; i < path.nodes.length; i++) {
                 const node = path.nodes[i];
-                const neighbors = this.rbush.searchNear(node.position, searchRadius);
-                const neighborNodes = neighbors.map(n => n.node);
-                node.avoid(neighborNodes);
+                const neighbors = this.rbush.searchNear(
+                    node.position,
+                    Math.max(this.settings.separationDistance, this.settings.attractionDistance)
+                );
+                const neighborNodes = neighbors.map((n) => n.node);
+                node.attract(neighborNodes, this.settings);
+                node.avoid(neighborNodes, this.settings);
 
-                if (i > 0 && i < path.nodes.length - 1) {
-                    node.align(path.nodes[i - 1], path.nodes[i + 1]);
-                }
+                const prevIndex = i === 0 ? path.nodes.length - 1 : i - 1;
+                const nextIndex = i === path.nodes.length - 1 ? 0 : i + 1;
+                node.align(path.nodes[prevIndex], path.nodes[nextIndex], this.settings);
 
-                node.update();
+                node.update(this.settings);
             }
         }
     }

@@ -23,6 +23,10 @@ export class MyApp extends LitElement {
     private growthSimulation = new GrowthSimulation(this);
 
     static styles = css`
+        :host {
+            overflow-x: auto;
+        }
+
         h1 {
             color: ${theme.colors.text};
         }
@@ -37,15 +41,15 @@ export class MyApp extends LitElement {
         }
 
         canvas {
-            width: 1000px;
-            height: 700px;
+            width: 1200px;
+            height: 800px;
         }
     `;
 
     firstUpdated(): void {
         if (this.canvas) {
             this.growthSimulation.setCanvas(this.canvas);
-            setTimeout(() => this.growthSimulation.stopSimulation(), 2000);
+            setTimeout(() => this.growthSimulation.stopSimulation(), 60000);
         } else {
             throw Error('No canvas found');
         }
@@ -79,9 +83,7 @@ export class MyApp extends LitElement {
             ></settings-modal>
             <h1>Differential Growth</h1>
             <div class="toolbar">
-                <button-element @click=${this.toggleSimulation}>
-                    ${playPauseIcon}
-                </button-element>
+                <button-element @click=${this.toggleSimulation}> ${playPauseIcon} </button-element>
                 <button-element @click=${this.openSettings}>
                     <settings-icon></settings-icon>
                 </button-element>

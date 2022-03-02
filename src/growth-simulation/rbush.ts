@@ -31,7 +31,7 @@ export default class MyRBush extends RBush<RBushItem> {
         return a.y - b.y;
     }
 
-    insertNodes(nodes: Node[])  {
+    insertNodes(nodes: Node[]) {
         this.load(nodes.map(rbushItemFromNode));
     }
 
@@ -43,7 +43,7 @@ export default class MyRBush extends RBush<RBushItem> {
         this.load(items);
     }
 
-    searchNear(point: Vector2, radius=50) {
+    searchNear(point: Vector2, radius = 50) {
         const minX = Math.min(point.x - radius, point.x + radius);
         const maxX = Math.max(point.x - radius, point.x + radius);
         const minY = Math.min(point.y - radius, point.y + radius);

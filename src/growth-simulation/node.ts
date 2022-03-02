@@ -1,14 +1,10 @@
 import Vector2 from './vector2';
+import { Settings } from './settings';
 
 export default class Node {
     position: Vector2 = new Vector2();
     velocity: Vector2 = new Vector2();
     private acceleration: Vector2 = new Vector2();
-    private maxSpeed = 0.5;
-    private maxForce = 0.2;
-    private desiredSeparation = 20.0;
-    private separationWeight = 1.1;
-    private alignmentWeight = 1.0;
 
     constructor(position?: Vector2, velocity?: Vector2) {
         if (position) {
@@ -24,22 +20,52 @@ export default class Node {
         this.acceleration.add(force);
     }
 
-    update() {
-        this.acceleration.limit(this.maxForce);
+    update(settings: Settings) {
+        this.acceleration.limit(settings.maxForce);
         this.velocity.add(this.acceleration);
-        this.velocity.limit(this.maxSpeed);
+        this.velocity.limit(settings.maxSpeed);
         this.position.add(this.velocity);
         this.acceleration = new Vector2();
     }
 
-    avoid(others: Node[]) {
+    attract(others: Node[], settings: Settings) {
+        const attractionForce = new Vector2();
+        let nearNodes = 0;
+
+        for (const other of others) {
+            const distance = this.position.distance(other.position);
+
+            if (distance > 0.0 && distance < settings.attractionDistance) {
+                const force = Vector2.sub(other.position, this.position);
+                force.normalize();
+                force.div(distance);
+                attractionForce.add(force);
+                nearNodes++;
+            }
+        }
+
+        if (nearNodes > 0) {
+            attractionForce.div(nearNodes);
+        }
+
+        if (attractionForce.length() > 0) {
+            // separationForce.normalize();
+            // separationForce.mul(this.maxSpeed);
+            attractionForce.sub(this.velocity);
+            attractionForce.limit(settings.maxForce);
+            attractionForce.mul(settings.attractionWeight);
+            this.addForce(attractionForce);
+        }
+    }
+
+    avoid(others: Node[], settings: Settings) {
         const separationForce = new Vector2();
         let nearNodes = 0;
 
         for (const other of others) {
             const distance = this.position.distance(other.position);
 
-            if (distance > 0.0 && distance < this.desiredSeparation) {
+            if (distance > 0.0 && distance < settings.separationDistance) {
                 const force = Vector2.sub(this.position, other.position);
                 force.normalize();
                 force.div(distance);
@@ -56,19 +82,19 @@ export default class Node {
             // separationForce.normalize();
             // separationForce.mul(this.maxSpeed);
             separationForce.sub(this.velocity);
-            separationForce.limit(this.maxForce);
-            separationForce.mul(this.separationWeight);
+            separationForce.limit(settings.maxForce);
+            separationForce.mul(settings.separationWeight);
             this.addForce(separationForce);
         }
     }
 
-    align(prev: Node, next: Node) {
+    align(prev: Node, next: Node, settings: Settings) {
         const target = Vector2.add(prev.position, next.position).div(2.0);
         const desiredVelocity = Vector2.sub(target, this.position);
         desiredVelocity.normalize();
-        desiredVelocity.mul(this.maxSpeed);
+        desiredVelocity.mul(settings.maxSpeed);
         const steer = Vector2.sub(desiredVelocity, this.velocity);
-        steer.limit(this.maxForce);
-        this.addForce(steer.mul(this.alignmentWeight));
+        steer.limit(settings.maxForce);
+        this.addForce(steer.mul(settings.alignmentWeight));
     }
 }
