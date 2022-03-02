@@ -9,6 +9,7 @@ import './components/icons/settings-icon';
 import GrowthSimulation from './growth-simulation';
 
 import theme from './theme';
+import { settingsConfig } from './growth-simulation/settings';
 
 const CANVAS_ID = 'simulation-canvas';
 
@@ -51,11 +52,14 @@ export class MyApp extends LitElement {
     }
 
     private openSettings() {
+        /** @todo pause instead of stop */
+        this.growthSimulation.stopSimulation();
         this.settingsOpen = true;
     }
 
     private closeSettings() {
         this.settingsOpen = false;
+        this.growthSimulation.startSimulation();
     }
 
     private toggleSimulation() {
@@ -64,6 +68,11 @@ export class MyApp extends LitElement {
         } else {
             this.growthSimulation?.startSimulation();
         }
+    }
+
+    private updateSetting(event: CustomEvent) {
+        const { settingName, value } = event.detail;
+        this.growthSimulation?.setSetting(settingName, value);
     }
 
     render() {
@@ -75,6 +84,8 @@ export class MyApp extends LitElement {
             <settings-modal
                 ?open=${this.settingsOpen}
                 @closed=${this.closeSettings}
+                .settings=${this.growthSimulation?.settings}
+                @update-setting=${this.updateSetting.bind(this)}
             ></settings-modal>
             <h1>Differential Growth</h1>
             <div class="toolbar">
@@ -83,11 +94,7 @@ export class MyApp extends LitElement {
                     <settings-icon></settings-icon>
                 </button-element>
             </div>
-            <canvas
-                id=${CANVAS_ID}
-                width="1200px"
-                height="800px"
-            ></canvas>
+            <canvas id=${CANVAS_ID} width="1200px" height="800px"></canvas>
         `;
     }
 }

@@ -9,4 +9,55 @@ export const defaultSettings = {
     maxEdgeLength: 1.0,
 };
 
+export const settingsConfig = {
+    maxSpeed: {
+        label: 'Max Speed',
+        min: 0,
+        max: 1,
+        step: 0.01,
+    },
+    maxForce: {
+        label: 'Max Force',
+        min: 0,
+        max: 1,
+        step: 0.01,
+    },
+    separationDistance: {
+        label: 'Separation Distance',
+        min: 0,
+        max: 100,
+        step: 1,
+    },
+    attractionDistance: {
+        label: 'Attraction Distance',
+        min: 0,
+        max: 100,
+        step: 1,
+    },
+    alignmentWeight: {
+        label: 'Alignment Weight',
+        min: 0,
+        max: 2,
+        step: 0.01,
+    },
+    attractionWeight: {
+        label: 'Attraction Weight',
+        min: 0,
+        max: 2,
+        step: 0.01,
+    },
+    separationWeight: {
+        label: 'Separation Weight',
+        min: 0,
+        max: 2,
+        step: 0.01,
+    },
+    maxEdgeLength: {
+        label: 'Max Edge Length',
+        min: 1,
+        max: 10,
+        step: 0.1,
+    },
+};
+
 export type Settings = typeof defaultSettings;

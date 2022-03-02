@@ -12,7 +12,7 @@ export default class GrowthSimulation implements ReactiveController {
     private paths: Path[] = [];
     private rbush?: RBush;
     private running: boolean = true;
-    private settings: Settings = defaultSettings;
+    settings: Settings = defaultSettings;
 
     constructor(readonly host: ReactiveControllerHost) {
         host.addController(this);
@@ -24,6 +24,11 @@ export default class GrowthSimulation implements ReactiveController {
 
     hostDisconnected() {
         /** @todo cleanup */
+    }
+
+    setSetting(settingName: keyof Settings, value: number) {
+        this.settings[settingName] = value;
+        this.host.requestUpdate();
     }
 
     setCanvas(canvas: HTMLCanvasElement) {
