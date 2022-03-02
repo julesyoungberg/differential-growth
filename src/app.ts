@@ -39,11 +39,6 @@ export class MyApp extends LitElement {
             position: relative;
             bottom: -1px;
         }
-
-        canvas {
-            width: 1200px;
-            height: 800px;
-        }
     `;
 
     firstUpdated(): void {
@@ -88,7 +83,11 @@ export class MyApp extends LitElement {
                     <settings-icon></settings-icon>
                 </button-element>
             </div>
-            <canvas id=${CANVAS_ID}></canvas>
+            <canvas
+                id=${CANVAS_ID}
+                width="1200px"
+                height="800px"
+            ></canvas>
         `;
     }
 }
