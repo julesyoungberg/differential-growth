@@ -53,33 +53,13 @@ export default class GrowthSimulation implements ReactiveController {
     }
 
     private update() {
+        if (!this.rbush) {
+            return;
+        }
+
         // update the simulation
         for (const path of this.paths) {
-            const newNodes = path.grow(this.settings.maxEdgeLength);
-            if (newNodes.length > 0) {
-                this.rbush?.insertNodes(newNodes);
-            }
-
-            if (!this.rbush) {
-                continue;
-            }
-
-            for (let i = 0; i < path.nodes.length; i++) {
-                const node = path.nodes[i];
-                const neighbors = this.rbush.searchNear(
-                    node.position,
-                    Math.max(this.settings.separationDistance, this.settings.attractionDistance)
-                );
-                const neighborNodes = neighbors.map((n) => n.node);
-                node.attract(neighborNodes, this.settings);
-                node.avoid(neighborNodes, this.settings);
-
-                const prevIndex = i === 0 ? path.nodes.length - 1 : i - 1;
-                const nextIndex = i === path.nodes.length - 1 ? 0 : i + 1;
-                node.align(path.nodes[prevIndex], path.nodes[nextIndex], this.settings);
-
-                node.update(this.settings);
-            }
+            path.update(this.settings, this.rbush);
         }
     }
 

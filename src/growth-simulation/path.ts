@@ -1,42 +1,109 @@
 import Node from './node';
+import RBush from './rbush';
+import { Settings } from './settings';
 import Vector2 from './vector2';
 
 export default class Path {
     nodes: Node[] = [];
+    cyclic = false;
 
-    constructor(nodes?: Node[]) {
+    constructor(nodes?: Node[], cyclic = false) {
         this.nodes = nodes || [];
+        this.cyclic = cyclic;
     }
 
-    grow(maxEdgeLength: number) {
+    private getNeighborNodes(index: number) {
+        let prevIndex = index - 1;
+        if (this.cyclic && prevIndex < 0) {
+            prevIndex += this.nodes.length;
+        }
+
+        let nextIndex = index + 1;
+        if (this.cyclic && nextIndex >= this.nodes.length) {
+            nextIndex -= this.nodes.length;
+        }
+
+        return {
+            previousNode: prevIndex < 0 ? undefined : this.nodes[prevIndex],
+            nextNode: nextIndex < 0 ? undefined : this.nodes[nextIndex],
+        };
+    }
+
+    private grow(maxEdgeLength: number) {
         const newNodes: Node[] = [];
 
         for (let i = this.nodes.length - 1; i >= 0; i--) {
-            const prevIndex = i === 0 ? this.nodes.length - 1 : i - 1;
-            const a = this.nodes[prevIndex];
-            const b = this.nodes[i];
-            const dist = Vector2.sub(a.position, b.position).length();
+            const { nextNode, previousNode } = this.getNeighborNodes(i);
+            if (!(previousNode && nextNode)) {
+                continue;
+            }
 
-            if (dist > maxEdgeLength) {
-                const start = this.nodes.slice(0, i);
-                const end = this.nodes.slice(i);
-                const reordered = end.concat(start);
-                const dir1 = Vector2.sub(reordered[0].position, reordered[1].position);
-                const dir2 = Vector2.sub(
-                    reordered[reordered.length - 1].position,
-                    reordered[reordered.length - 2].position
-                );
-                const dir = Vector2.add(dir1, dir2).mul(0.5);
-                const midX =
-                    (reordered[reordered.length - 1].position.x + reordered[0].position.x) / 2.0;
-                const midY =
-                    (reordered[reordered.length - 1].position.y + reordered[0].position.y) / 2.0;
-                const newNode = new Node(new Vector2(midX + dir.x, midY + dir.y));
-                this.nodes = [...start, newNode, ...end];
+            if (previousNode.distance(this.nodes[i]) > maxEdgeLength) {
+                const newNode = new Node(Vector2.add(previousNode.position, nextNode.position).div(2));
+                if (i === 0) {
+                    this.nodes.splice(this.nodes.length, 0, newNode);
+                } else {
+                    this.nodes.splice(i, 0, newNode);
+                }
             }
         }
 
         return newNodes;
+    }
+
+    private applyBounds() {
+        /** @todo */
+    }
+
+    private pruneNodes(minEdgeLength: number, rbush: RBush) {
+        for (let index = 0; index <= this.nodes.length; index++) {
+            const { previousNode } = this.getNeighborNodes(index);
+            if (!previousNode) {
+                continue;
+            }
+
+            if (previousNode.distance(this.nodes[index]) < minEdgeLength) {
+                if (index === 0) {
+                    this.nodes.splice(this.nodes.length - 1, 1);
+                } else {
+                    this.nodes.splice(index - 1, 1);
+                }
+            }
+        }
+    }
+
+    private injectRandomNodes() {
+        /** @todo */
+    }
+
+    update(settings: Settings, rbush: RBush) {
+        for (let i = 0; i < this.nodes.length; i++) {
+            const node = this.nodes[i];
+            const neighbors = rbush.searchNear(
+                node.position,
+                Math.max(settings.separationDistance, settings.attractionDistance)
+            );
+            const neighborNodes = neighbors.map((n) => n.node);
+            node.attract(neighborNodes, settings);
+            node.avoid(neighborNodes, settings);
+
+            const prevIndex = i === 0 ? this.nodes.length - 1 : i - 1;
+            const nextIndex = i === this.nodes.length - 1 ? 0 : i + 1;
+            node.align(this.nodes[prevIndex], this.nodes[nextIndex], settings);
+
+            this.applyBounds();
+
+            node.update(settings);
+        }
+
+        const newNodes = this.grow(settings.maxEdgeLength);
+        if (newNodes.length > 0) {
+            rbush.insertNodes(newNodes);
+        }
+
+        this.pruneNodes(settings.minEdgeLength, rbush);
+
+        this.injectRandomNodes();
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -84,6 +151,6 @@ export default class Path {
             nodes.push(node);
         }
 
-        return new Path(nodes);
+        return new Path(nodes, true);
     }
 }

@@ -1,7 +1,6 @@
 import RBush from 'rbush';
 
 import Node from './node';
-import Path from './path';
 import Vector2 from './vector2';
 
 export type RBushItem = {
@@ -17,6 +16,8 @@ function rbushItemFromNode(node: Node) {
         node,
     };
 }
+
+type Path = { nodes: Node[] };
 
 export default class MyRBush extends RBush<RBushItem> {
     toBBox(item: RBushItem) {

@@ -6,7 +6,8 @@ export const defaultSettings = {
     alignmentWeight: 1.0,
     attractionWeight: 0.5,
     separationWeight: 1.1,
-    maxEdgeLength: 1.0,
+    maxEdgeLength: 3.0,
+    minEdgeLength: 1.0,
 };
 
 export const settingsConfig = {
@@ -55,7 +56,13 @@ export const settingsConfig = {
     maxEdgeLength: {
         label: 'Max Edge Length',
         min: 1,
-        max: 10,
+        max: 100,
+        step: 0.1,
+    },
+    minEdgeLength: {
+        label: 'Min Edge Length',
+        min: 0,
+        max: 5,
         step: 0.1,
     },
 };

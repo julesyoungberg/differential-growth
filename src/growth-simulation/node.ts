@@ -16,6 +16,10 @@ export default class Node {
         }
     }
 
+    distance(other: Node) {
+        return Vector2.sub(other.position, this.position).length();
+    }
+
     addForce(force: Vector2) {
         this.acceleration.add(force);
     }
