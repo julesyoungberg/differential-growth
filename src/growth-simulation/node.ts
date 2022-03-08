@@ -17,7 +17,7 @@ export default class Node {
     }
 
     distance(other: Node) {
-        return Vector2.sub(other.position, this.position).length();
+        return this.position.distance(other.position);
     }
 
     addForce(force: Vector2) {
@@ -37,7 +37,7 @@ export default class Node {
         let nearNodes = 0;
 
         for (const other of others) {
-            const distance = this.position.distance(other.position);
+            const distance = this.distance(other);
 
             if (distance > 0.0 && distance < settings.attractionDistance) {
                 const force = Vector2.sub(other.position, this.position);
@@ -67,7 +67,7 @@ export default class Node {
         let nearNodes = 0;
 
         for (const other of others) {
-            const distance = this.position.distance(other.position);
+            const distance = this.distance(other);
 
             if (distance > 0.0 && distance < settings.separationDistance) {
                 const force = Vector2.sub(this.position, other.position);

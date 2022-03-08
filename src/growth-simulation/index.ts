@@ -45,9 +45,8 @@ export default class GrowthSimulation implements ReactiveController {
     }
 
     private setup() {
-        this.paths = [Path.circle(this.width, this.height)];
         this.rbush = new RBush();
-        this.rbush.insertPaths(this.paths);
+        this.paths = [Path.circle(this.settings, this.rbush, this.width, this.height)];
         console.log(this.rbush);
         console.log(this.rbush.all());
     }
@@ -59,7 +58,7 @@ export default class GrowthSimulation implements ReactiveController {
 
         // update the simulation
         for (const path of this.paths) {
-            path.update(this.settings, this.rbush);
+            path.update();
         }
     }
 

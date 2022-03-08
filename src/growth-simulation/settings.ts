@@ -8,6 +8,7 @@ export const defaultSettings = {
     separationWeight: 1.1,
     maxEdgeLength: 3.0,
     minEdgeLength: 1.0,
+    injectionProbability: 0.5,
 };
 
 export const settingsConfig = {
@@ -65,6 +66,12 @@ export const settingsConfig = {
         max: 5,
         step: 0.1,
     },
+    injectionProbability: {
+        label: 'Injection Probability',
+        min: 0,
+        max: 1,
+        step: 0.01,
+    }
 };
 
 export type Settings = typeof defaultSettings;
