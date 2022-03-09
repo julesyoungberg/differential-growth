@@ -26,8 +26,8 @@ export default class GrowthSimulation implements ReactiveController {
         /** @todo cleanup */
     }
 
-    setSetting(settingName: keyof Settings, value: number) {
-        this.settings[settingName] = value;
+    updateSettings(newSettings: Partial<Settings>) {
+        this.settings = { ...this.settings, ...newSettings };
         this.host.requestUpdate();
     }
 

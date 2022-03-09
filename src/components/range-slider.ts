@@ -26,7 +26,7 @@ export class RangeSlider extends LitElement {
     `;
 
     private onChange(event: InputEvent) {
-        const value = (event.target as HTMLInputElement).value;
+        const value = parseFloat((event.target as HTMLInputElement).value);
         this.dispatchEvent(
             new CustomEvent('change', { bubbles: true, composed: true, detail: { value } })
         );
@@ -42,6 +42,7 @@ export class RangeSlider extends LitElement {
                 min=${this.min}
                 max=${this.max}
                 step=${this.step}
+                value=${this.value}
                 @change=${this.onChange}
             />
         `;

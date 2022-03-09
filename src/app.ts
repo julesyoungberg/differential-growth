@@ -70,9 +70,9 @@ export class MyApp extends LitElement {
         }
     }
 
-    private updateSetting(event: CustomEvent) {
-        const { settingName, value } = event.detail;
-        this.growthSimulation?.setSetting(settingName, value);
+    private updateSettings(event: CustomEvent) {
+        const { settings } = event.detail;
+        this.growthSimulation?.updateSettings(settings);
     }
 
     render() {
@@ -85,7 +85,7 @@ export class MyApp extends LitElement {
                 ?open=${this.settingsOpen}
                 @closed=${this.closeSettings}
                 .settings=${this.growthSimulation?.settings}
-                @update-setting=${this.updateSetting.bind(this)}
+                @update-settings=${this.updateSettings.bind(this)}
             ></settings-modal>
             <h1>Differential Growth</h1>
             <div class="toolbar">

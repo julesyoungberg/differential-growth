@@ -10,6 +10,14 @@ export class ButtonElement extends LitElement {
             background-color: ${theme.colors.greyDark};
             border-width: 0;
             border-radius: ${theme.borderRadius};
+            color: white;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 0.1ch;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 18px;
+            padding: var(--button-padding, 4px);
         }
     `;
 
