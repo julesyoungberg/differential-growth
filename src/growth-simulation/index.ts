@@ -10,7 +10,6 @@ export default class GrowthSimulation implements ReactiveController {
     private canvas?: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D | null = null;
     private paths: Path[] = [];
-    private rbush?: RBush;
     private running: boolean = true;
     settings: Settings = defaultSettings;
 
@@ -45,20 +44,19 @@ export default class GrowthSimulation implements ReactiveController {
     }
 
     private setup() {
-        this.rbush = new RBush();
-        this.paths = [Path.circle(this.settings, this.rbush, this.width, this.height)];
-        console.log(this.rbush);
-        console.log(this.rbush.all());
+        this.paths = [Path.circle(this.settings, this.width, this.height)];
     }
 
     private update() {
-        if (!this.rbush) {
-            return;
+        // build rbush
+        const rbush = new RBush();
+        for (const path of this.paths) {
+            rbush.insertNodes(path.nodes);
         }
-
+    
         // update the simulation
         for (const path of this.paths) {
-            path.update();
+            path.update(rbush);
         }
     }
 

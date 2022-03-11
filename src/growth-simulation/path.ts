@@ -7,10 +7,9 @@ export default class Path {
     cyclic: boolean;
     nodes: Node[];
 
-    constructor(readonly settings: Settings, readonly rbush: RBush, nodes?: Node[], cyclic = false) {
+    constructor(readonly settings: Settings, nodes?: Node[], cyclic = false) {
         this.nodes = nodes || [];
         this.cyclic = cyclic;
-        rbush.insertNodes(this.nodes);
     }
 
     private getNeighborNodes(index: number) {
@@ -64,7 +63,6 @@ export default class Path {
             }
 
             if (previousNode.distance(this.nodes[index]) < this.settings.minEdgeLength) {
-                this.rbush.removeNode(this.nodes[index]);
                 if (index === 0) {
                     this.nodes.splice(this.nodes.length - 1, 1);
                 } else {
@@ -88,55 +86,35 @@ export default class Path {
         }
     }
 
-    private injectCurvatureNode() {
-        /** @todo */
-    }
-
-    private injectNode() {
-        /** @todo put injection mode in settings */
-        const injectionMode: string = 'RANDOM';
-        switch (injectionMode) {
-            case 'RANDOM':
-                this.injectRandomNode();
-                return;
-            case 'CURVATURE':
-                this.injectCurvatureNode();
-                return;
-            default:
-                throw new Error('invalid injection mode');
-        }
-    }
-
-    update() {
+    update(rbush: RBush) {
         for (let i = 0; i < this.nodes.length; i++) {
             const node = this.nodes[i];
-            const neighbors = this.rbush.searchNear(
+            const neighbors = rbush.searchNear(
                 node.position,
-                Math.max(this.settings.separationDistance, this.settings.attractionDistance)
+                this.settings.separationDistance,
+                // Math.max(this.settings.separationDistance, this.settings.attractionDistance)
             );
             const neighborNodes = neighbors.map((n) => n.node);
-            node.attract(neighborNodes, this.settings);
+            // node.attract(neighborNodes, this.settings);
             node.avoid(neighborNodes, this.settings);
 
-            const prevIndex = i === 0 ? this.nodes.length - 1 : i - 1;
-            const nextIndex = i === this.nodes.length - 1 ? 0 : i + 1;
-            node.align(this.nodes[prevIndex], this.nodes[nextIndex], this.settings);
+            const { previousNode, nextNode } = this.getNeighborNodes(i);
+            if (previousNode && nextNode) {
+                node.align(previousNode, nextNode, this.settings);
+            }
 
             this.applyBounds();
 
             node.update(this.settings);
         }
 
-        const newNodes = this.grow();
-        if (newNodes.length > 0) {
-            this.rbush.insertNodes(newNodes);
-        }
+        this.grow();
 
         this.pruneNodes();
 
-        if (Math.random() < this.settings.injectionProbability) {
-            this.injectNode();
-        }
+        // if (Math.random() < this.settings.injectionProbability) {
+        //     this.injectRandomNode();
+        // }
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -156,7 +134,7 @@ export default class Path {
         ctx.restore();
     }
 
-    static horizontal(settings: Settings, rbush: RBush, width: number, height: number) {
+    static horizontal(settings: Settings, width: number, height: number) {
         const nodes = [];
         const y = height / 2.0;
         const nNodes = 10;
@@ -167,14 +145,14 @@ export default class Path {
             nodes.push(node);
         }
 
-        return new Path(settings, rbush, nodes);
+        return new Path(settings, nodes);
     }
 
-    static circle(settings: Settings, rbush: RBush, width: number, height: number) {
+    static circle(settings: Settings, width: number, height: number) {
         const nodes = [];
         const center = new Vector2(width / 2.0, height / 2.0);
-        const nNodes = 10.0;
-        const radius = 30.0;
+        const nNodes = 3;
+        const radius = 300.0;
 
         for (let i = 0; i < nNodes; i++) {
             const angle = (i / nNodes) * Math.PI * 2;
@@ -184,6 +162,6 @@ export default class Path {
             nodes.push(node);
         }
 
-        return new Path(settings, rbush, nodes, true);
+        return new Path(settings, nodes, true);
     }
 }

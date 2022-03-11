@@ -45,7 +45,7 @@ export class MyApp extends LitElement {
     firstUpdated(): void {
         if (this.canvas) {
             this.growthSimulation.setCanvas(this.canvas);
-            setTimeout(() => this.growthSimulation.stopSimulation(), 60000);
+            // setTimeout(() => this.growthSimulation.stopSimulation(), 60000);
         } else {
             throw Error('No canvas found');
         }

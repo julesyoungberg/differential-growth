@@ -25,7 +25,6 @@ export default class Node {
     }
 
     update(settings: Settings) {
-        this.acceleration.limit(settings.maxForce);
         this.velocity.add(this.acceleration);
         this.velocity.limit(settings.maxSpeed);
         this.position.add(this.velocity);
@@ -53,8 +52,8 @@ export default class Node {
         }
 
         if (attractionForce.length() > 0) {
-            // separationForce.normalize();
-            // separationForce.mul(this.maxSpeed);
+            attractionForce.normalize();
+            attractionForce.mul(settings.maxSpeed);
             attractionForce.sub(this.velocity);
             attractionForce.limit(settings.maxForce);
             attractionForce.mul(settings.attractionWeight);
@@ -83,8 +82,8 @@ export default class Node {
         }
 
         if (separationForce.length() > 0) {
-            // separationForce.normalize();
-            // separationForce.mul(this.maxSpeed);
+            separationForce.normalize();
+            separationForce.mul(settings.maxSpeed);
             separationForce.sub(this.velocity);
             separationForce.limit(settings.maxForce);
             separationForce.mul(settings.separationWeight);

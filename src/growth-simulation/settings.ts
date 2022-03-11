@@ -1,12 +1,12 @@
 export const defaultSettings = {
-    maxSpeed: 0.5,
-    maxForce: 0.2,
-    separationDistance: 50.0,
+    maxSpeed: 1.0,
+    maxForce: 0.9,
+    separationDistance: 10.0,
     attractionDistance: 70.0,
     alignmentWeight: 1.0,
-    attractionWeight: 0.5,
-    separationWeight: 1.1,
-    maxEdgeLength: 3.0,
+    attractionWeight: 1.0,
+    separationWeight: 1.0,
+    maxEdgeLength: 5.0,
     minEdgeLength: 1.0,
     injectionProbability: 0.5,
 };
