@@ -1,7 +1,7 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import theme from '../theme';
+// import theme from '../theme';
 import { Settings, settingsConfig } from '../growth-simulation/settings';
 
 import './button-element';

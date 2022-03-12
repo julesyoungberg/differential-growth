@@ -9,7 +9,6 @@ import './components/icons/settings-icon';
 import GrowthSimulation from './growth-simulation';
 
 import theme from './theme';
-import { settingsConfig } from './growth-simulation/settings';
 
 const CANVAS_ID = 'simulation-canvas';
 

@@ -44,7 +44,7 @@ export default class GrowthSimulation implements ReactiveController {
     }
 
     private setup() {
-        this.paths = [Path.circle(this.settings, this.width, this.height)];
+        this.paths = [Path.polygon(this.settings, this.width, this.height)];
     }
 
     private update() {

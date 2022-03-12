@@ -72,19 +72,19 @@ export default class Path {
         }
     }
 
-    private injectRandomNode() {
-        const index = Math.round(Math.random() * (this.nodes.length - 2)) + 1;
-        const { previousNode, nextNode } = this.getNeighborNodes(index);
+    // private injectRandomNode() {
+    //     const index = Math.round(Math.random() * (this.nodes.length - 2)) + 1;
+    //     const { previousNode, nextNode } = this.getNeighborNodes(index);
 
-        if (previousNode && nextNode && previousNode.distance(this.nodes[index]) > this.settings.minEdgeLength) {
-            const newNode = new Node(Vector2.add(previousNode.position, nextNode.position).div(2));
-            if (index === 0) {
-                this.nodes.splice(this.nodes.length, 0, newNode);
-            } else {
-                this.nodes.splice(index, 0, newNode);
-            }
-        }
-    }
+    //     if (previousNode && nextNode && previousNode.distance(this.nodes[index]) > this.settings.minEdgeLength) {
+    //         const newNode = new Node(Vector2.add(previousNode.position, nextNode.position).div(2));
+    //         if (index === 0) {
+    //             this.nodes.splice(this.nodes.length, 0, newNode);
+    //         } else {
+    //             this.nodes.splice(index, 0, newNode);
+    //         }
+    //     }
+    // }
 
     update(rbush: RBush) {
         for (let i = 0; i < this.nodes.length; i++) {
@@ -151,7 +151,7 @@ export default class Path {
     static circle(settings: Settings, width: number, height: number) {
         const nodes = [];
         const center = new Vector2(width / 2.0, height / 2.0);
-        const nNodes = 3;
+        const nNodes = 100;
         const radius = 300.0;
 
         for (let i = 0; i < nNodes; i++) {
@@ -160,6 +160,41 @@ export default class Path {
             const y = Math.sin(angle) * radius;
             const node = new Node(new Vector2(center.x + x, center.y + y));
             nodes.push(node);
+        }
+
+        return new Path(settings, nodes, true);
+    }
+
+    static polygon(settings: Settings, width: number, height: number) {
+        const nodes = [];
+        const center = new Vector2(width / 2.0, height / 2.0);
+        const nEdges = 3;
+        const nNodes = 100;
+        const nodesPerEdge = Math.floor((nNodes - nEdges) / nEdges);
+        const radius = 300.0;
+
+        const getCornerNode = (i: number) => {
+            const angle = ((i % nEdges) / nEdges) * Math.PI * 2;
+            return new Node(
+                new Vector2(
+                    center.x + Math.cos(angle) * radius,
+                    center.y + Math.sin(angle) * radius
+                )
+            );
+        };
+
+        for (let i = 0; i < nEdges; i++) {
+            const node = getCornerNode(i);
+            nodes.push(node);
+
+            const nextCornerNode = getCornerNode(i + 1);
+            const edgeVector = Vector2.sub(nextCornerNode.position, node.position);
+
+            for (let j = 0; j < nodesPerEdge; j++) {
+                const distanceTraveled = j / nodesPerEdge;
+                const position = Vector2.add(node.position, Vector2.mul(edgeVector, distanceTraveled));
+                nodes.push(new Node(position));
+            }
         }
 
         return new Path(settings, nodes, true);

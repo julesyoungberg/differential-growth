@@ -68,4 +68,10 @@ export default class Vector2 {
         newVec.sub(b);
         return newVec;
     }
+
+    static mul(a: Vector2, s: number) {
+        const newVec = new Vector2(a.x, a.y);
+        newVec.mul(s);
+        return newVec;
+    }
 }
