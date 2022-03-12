@@ -11,6 +11,7 @@ export default class GrowthSimulation implements ReactiveController {
     private ctx: CanvasRenderingContext2D | null = null;
     private paths: Path[] = [];
     private running: boolean = true;
+    private stopped: boolean = false;
     settings: Settings = defaultSettings;
 
     constructor(readonly host: ReactiveControllerHost) {
@@ -41,6 +42,10 @@ export default class GrowthSimulation implements ReactiveController {
 
     isRunning() {
         return this.running;
+    }
+
+    wasStopped() {
+        return this.stopped;
     }
 
     private setup() {
@@ -96,9 +101,21 @@ export default class GrowthSimulation implements ReactiveController {
         requestAnimationFrame(this.render.bind(this));
     }
 
-    stopSimulation() {
+    pauseSimulation() {
         // stop simulation
         this.running = false;
+        this.host.requestUpdate();
+    }
+
+    resumeSimulation() {
+        this.running = true;
+        this.host.requestUpdate();
+        requestAnimationFrame(this.render.bind(this));
+    }
+
+    stopSimulation() {
+        this.running = false;
+        this.stopped = true;
         this.host.requestUpdate();
     }
 }

@@ -3,9 +3,7 @@ import { customElement, query, state } from 'lit/decorators.js';
 
 import './components/button-element';
 import './components/settings-modal';
-import './components/icons/pause-icon';
-import './components/icons/play-icon';
-import './components/icons/settings-icon';
+import './components/tool-bar';
 import GrowthSimulation from './growth-simulation';
 
 import theme from './theme';
@@ -31,8 +29,8 @@ export class MyApp extends LitElement {
             color: ${theme.colors.text};
         }
 
-        .toolbar {
-            margin-bottom: 18px;
+        canvas {
+            margin-top: 18px;
         }
 
         settings-icon {
@@ -51,7 +49,6 @@ export class MyApp extends LitElement {
     }
 
     private openSettings() {
-        /** @todo pause instead of stop */
         this.growthSimulation.stopSimulation();
         this.settingsOpen = true;
     }
@@ -61,12 +58,20 @@ export class MyApp extends LitElement {
         this.growthSimulation.startSimulation();
     }
 
-    private toggleSimulation() {
-        if (this.growthSimulation?.isRunning()) {
-            this.growthSimulation?.stopSimulation();
-        } else {
-            this.growthSimulation?.startSimulation();
-        }
+    private pauseSimulation() {
+        this.growthSimulation?.pauseSimulation();
+    }
+
+    private stopSimulation() {
+        this.growthSimulation?.stopSimulation();
+    }
+
+    private restartSimulation() {
+        this.growthSimulation?.startSimulation();
+    }
+
+    private resumeSimulation() {
+        this.growthSimulation?.resumeSimulation();
     }
 
     private updateSettings(event: CustomEvent) {
@@ -87,12 +92,16 @@ export class MyApp extends LitElement {
                 @update-settings=${this.updateSettings.bind(this)}
             ></settings-modal>
             <h1>Differential Growth</h1>
-            <div class="toolbar">
-                <button-element @click=${this.toggleSimulation}> ${playPauseIcon} </button-element>
-                <button-element @click=${this.openSettings}>
-                    <settings-icon></settings-icon>
-                </button-element>
-            </div>
+            <tool-bar
+                class="toolbar"
+                ?simulationRunning=${this.growthSimulation?.isRunning()}
+                ?simulationStopped=${this.growthSimulation?.wasStopped()}
+                @pause=${this.pauseSimulation.bind(this)}
+                @restart=${this.restartSimulation.bind(this)}
+                @resume=${this.resumeSimulation.bind(this)}
+                @stop=${this.stopSimulation.bind(this)}
+                @open-settings=${this.openSettings.bind(this)}
+            ></tool-bar>
             <canvas id=${CANVAS_ID} width="1200px" height="800px"></canvas>
         `;
     }
