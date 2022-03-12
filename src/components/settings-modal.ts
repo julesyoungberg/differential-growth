@@ -77,7 +77,7 @@ export class SettingsModal extends LitElement {
             <modal-container ?open=${this.open}>
                 <div class="settings-modal-wrapper">
                     <close-icon @click=${this.close}></close-icon>
-                    <h2>Settings</h2>
+                    <h2>Config</h2>
                     <div class="controls">
                         ${Object.keys(this.settings as Record<string, number>).map((k) => {
                             const key = k as keyof Settings;

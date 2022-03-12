@@ -96,6 +96,7 @@ export default class GrowthSimulation implements ReactiveController {
 
         // start simulation
         this.running = true;
+        this.stopped = false;
         this.host.requestUpdate();
         this.setup();
         requestAnimationFrame(this.render.bind(this));
