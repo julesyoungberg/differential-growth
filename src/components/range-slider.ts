@@ -60,7 +60,7 @@ export class RangeSlider extends LitElement {
                     value=${this.value}
                     @change=${this.onChange}
                 />
-                <span class="value">${this.value}</span>
+                <span class="value">${this.value.toFixed(2)}</span>
             </span>
         `;
     }
