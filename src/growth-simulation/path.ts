@@ -30,8 +30,6 @@ export default class Path {
     }
 
     private grow() {
-        const newNodes: Node[] = [];
-
         for (let i = this.nodes.length - 1; i >= 0; i--) {
             const { nextNode, previousNode } = this.getNeighborNodes(i);
             if (!(previousNode && nextNode)) {
@@ -47,8 +45,6 @@ export default class Path {
                 }
             }
         }
-
-        return newNodes;
     }
 
     private applyBounds() {

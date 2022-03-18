@@ -4,11 +4,14 @@ import { customElement, query, state } from 'lit/decorators.js';
 import './components/button-element';
 import './components/settings-modal';
 import './components/tool-bar';
+import GrowthSimulationWASM from './controllers/growth-simulation-wasm';
 import GrowthSimulation from './growth-simulation';
 
 import theme from './theme';
 
 const CANVAS_ID = 'simulation-canvas';
+const WIDTH = 1200;
+const HEIGHT = 800;
 
 @customElement('my-app')
 export class MyApp extends LitElement {
@@ -19,6 +22,7 @@ export class MyApp extends LitElement {
     private canvas?: HTMLCanvasElement;
 
     private growthSimulation = new GrowthSimulation(this);
+    private growthSimulationWASM = new GrowthSimulationWASM(this);
 
     static styles = css`
         :host {
@@ -85,6 +89,7 @@ export class MyApp extends LitElement {
     }
 
     render() {
+        console.log(this.growthSimulationWASM);
         return html`
             <settings-modal
                 ?open=${this.settingsOpen}
@@ -103,7 +108,7 @@ export class MyApp extends LitElement {
                 @stop=${this.stopSimulation}
                 @open-settings=${this.openSettings}
             ></tool-bar>
-            <canvas id=${CANVAS_ID} width="1200px" height="800px"></canvas>
+            <canvas id=${CANVAS_ID} width="${WIDTH}ps" height="${HEIGHT}px"></canvas>
         `;
     }
 }

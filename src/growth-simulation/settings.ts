@@ -1,4 +1,6 @@
 export const defaultSettings = {
+    width: 0,
+    height: 0,
     maxSpeed: 1.0,
     maxForce: 0.9,
     separationDistance: 10.0,

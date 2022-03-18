@@ -3,15 +3,25 @@
 
 /** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
-  mount: {src: "/"},
+  mount: {
+    src: "/",
+  },
   plugins: [
-    '@snowpack/plugin-typescript'
+    '@snowpack/plugin-typescript',
+    [
+      'snowpack-plugin-wasm-pack',
+      {
+        projectPath: './growth-simulation',
+      },
+    ],
   ],
   packageOptions: {
-    /* ... */
+    // rollup: {
+    //   plugins: [],
+    // },
   },
   devOptions: {
-    /* ... */
+    // hmr: false,
   },
   buildOptions: {
     /* ... */

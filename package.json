@@ -1,32 +1,39 @@
 {
-  "name": "lit-starter",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "scripts": {
-    "dev": "snowpack dev",
-    "build": "snowpack build",
-    "prettier": "prettier --list-different --write './src/**/*.{j,t}s?(x)'",
-    "lint": "tsc --noEmit -P . && eslint './src/**/*.ts?(x)'",
-    "lint:fix": "eslint './src/**/*.ts?(x)' --fix"
-  },
-  "devDependencies": {
-    "@snowpack/plugin-typescript": "^1.2.1",
-    "@types/rbush": "^3.0.0",
-    "eslint": "^8.9.0",
-    "eslint-config-airbnb-typescript-prettier": "^5.0.0",
-    "eslint-plugin-lit": "^1.6.1",
-    "prettier": "^2.5.1",
-    "snowpack": "^3.8.8",
-    "ts-lit-plugin": "^1.2.1",
-    "typescript": "^4.5.5"
-  },
-  "dependencies": {
-    "lit": "^2.1.3",
-    "point-in-polygon": "^1.1.0",
-    "rbush": "^3.0.1",
-    "rbush-knn": "^3.0.1",
-    "svg-pathdata": "^6.0.3",
-    "svg-points": "^6.0.1"
-  }
+    "name": "differential-growth",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "dev": "snowpack dev",
+        "build": "snowpack build",
+        "prettier": "prettier --list-different --write './src/**/*.{j,t}s?(x)'",
+        "lint": "tsc --noEmit -P . && eslint './src/**/*.ts?(x)'",
+        "lint:fix": "eslint './src/**/*.ts?(x)' --fix",
+        "test": "npm run test:wasm",
+        "build:wasm": "cd growth-simulation && wasm-pack build --target web",
+        "test:wasm": "cd growth-simulation && wasm-pack test --node",
+        "format": "prettier --write \"src/**/*.js\""
+    },
+    "devDependencies": {
+        "@rollup/plugin-wasm": "^5.1.2",
+        "@snowpack/plugin-typescript": "^1.2.1",
+        "@types/rbush": "^3.0.0",
+        "eslint": "^8.9.0",
+        "eslint-config-airbnb-typescript-prettier": "^5.0.0",
+        "eslint-plugin-lit": "^1.6.1",
+        "prettier": "^2.5.1",
+        "snowpack": "^3.3.7",
+        "snowpack-plugin-wasm-pack": "^1.1.0",
+        "ts-lit-plugin": "^1.2.1",
+        "typescript": "^4.5.5"
+    },
+    "dependencies": {
+        "growth-simulation": "file:growth-simulation/pkg",
+        "lit": "^2.1.3",
+        "point-in-polygon": "^1.1.0",
+        "rbush": "^3.0.1",
+        "rbush-knn": "^3.0.1",
+        "svg-pathdata": "^6.0.3",
+        "svg-points": "^6.0.1"
+    }
 }

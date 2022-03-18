@@ -1,2 +1,14 @@
 node_modules/
 build/
+.DS_Store
+.snowpack
+build
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# wasm-pack output
+*/pkg*
+*/target*
+wasm-pack.log*
