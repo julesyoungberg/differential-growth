@@ -1,7 +1,7 @@
 use rstar::{RTree, AABB};
 use wasm_bindgen::prelude::*;
 
-use crate::settings::Settings;
+use crate::config::Settings;
 use crate::vec2::{Point2, Vec2};
 
 #[wasm_bindgen]

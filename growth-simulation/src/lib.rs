@@ -1,6 +1,6 @@
+pub mod config;
 mod node;
 mod path;
-pub mod settings;
 pub mod simulation;
 mod utils;
 mod vec2;

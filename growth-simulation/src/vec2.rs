@@ -1,11 +1,12 @@
-use wasm_bindgen::prelude::*;
-
 use std::ops;
+
+use serde::{Deserialize, Serialize};
+use wasm_bindgen::prelude::*;
 
 pub type Point2 = [f32; 2];
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Vec2 {
     x: f32,
     y: f32,

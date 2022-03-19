@@ -2,9 +2,10 @@ use std::vec::Vec;
 
 use rstar::RTree;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::console_log;
 
+use crate::config::{PolygonConfig, Settings};
 use crate::node::Node;
-use crate::settings::Settings;
 use crate::vec2::{Point2, Vec2};
 
 #[wasm_bindgen]
@@ -46,8 +47,11 @@ impl Path {
         neighbor_nodes
     }
 
-    fn grow(&mut self, settings: &Settings) {
+    fn grow(&mut self, settings: &Settings) -> bool {
         let n_nodes = self.nodes.len();
+        let mut new_nodes = false;
+
+        // console_log!("N NODES: {}", n_nodes);
 
         for i in 0..n_nodes {
             let index = n_nodes - i - 1;
@@ -55,19 +59,23 @@ impl Path {
 
             if let Some(prev_node) = neighbors.prev_node {
                 if let Some(next_node) = neighbors.next_node {
-                    if prev_node.distance(&self.nodes[i]) > settings.max_edge_length {
+                    if next_node.distance(&self.nodes[i]) > settings.max_edge_length {
+                        // console_log!("NEW NODE AT INDEX: {}", index);
                         let position = (prev_node.position + next_node.position) / 2.0;
                         let new_node = Node::new_with_position(position);
+                        new_nodes = true;
 
                         if i == 0 {
                             self.nodes.push(new_node);
                         } else {
-                            self.nodes.splice(i - 1..i, vec![new_node]);
+                            self.nodes.splice(i..i, vec![new_node]);
                         }
                     }
                 }
             }
         }
+
+        new_nodes
     }
 
     fn prune(&mut self, settings: &Settings) {
@@ -119,6 +127,15 @@ impl Path {
         self.nodes.iter().map(|n| n.position.as_point2()).collect()
     }
 
+    pub fn preprocess(&mut self, settings: &Settings) {
+        console_log!("PREPROCESS");
+        let mut has_grown = true;
+        while has_grown {
+            has_grown = self.grow(settings);
+            console_log!("has_grown: {}", has_grown);
+        }
+    }
+
     pub fn horizontal(settings: &Settings) -> Self {
         let mut nodes = vec![];
         let y = settings.height as f32 / 2.0;
@@ -147,8 +164,18 @@ impl Path {
         Self::new(nodes, false)
     }
 
-    // pub fn circle(settings: &Settings, n_nodes: u32, radius: f32) -> Self {
-    //     let mut nodes = vec![];
-    //     let
-    // }
+    pub fn polygon(settings: &Settings, config: PolygonConfig) -> Self {
+        let mut nodes = vec![];
+        let center = Vec2::new(settings.width as f32 / 2.0, settings.height as f32 / 2.0);
+
+        for i in 0..config.n_sides {
+            let angle = (i as f32 / config.n_sides as f32) * std::f32::consts::PI * 2.0;
+            let x = angle.cos() * config.radius;
+            let y = angle.sin() * config.radius;
+            let node = Node::new_with_position(center + Vec2::new(x, y));
+            nodes.push(node);
+        }
+
+        Self::new(nodes, true)
+    }
 }

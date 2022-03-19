@@ -5,7 +5,6 @@ import './components/button-element';
 import './components/settings-modal';
 import './components/tool-bar';
 import GrowthSimulationWASM from './controllers/growth-simulation-wasm';
-import GrowthSimulation from './growth-simulation';
 
 import theme from './theme';
 
@@ -21,8 +20,7 @@ export class MyApp extends LitElement {
     @query(`#${CANVAS_ID}`)
     private canvas?: HTMLCanvasElement;
 
-    private growthSimulation = new GrowthSimulation(this);
-    private growthSimulationWASM = new GrowthSimulationWASM(this);
+    private growthSimulation = new GrowthSimulationWASM(this, WIDTH, HEIGHT);
 
     static styles = css`
         :host {
@@ -43,7 +41,7 @@ export class MyApp extends LitElement {
         }
     `;
 
-    firstUpdated(): void {
+    firstUpdated() {
         if (this.canvas) {
             this.growthSimulation.setCanvas(this.canvas);
             // setTimeout(() => this.growthSimulation.stopSimulation(), 60000);
@@ -89,14 +87,16 @@ export class MyApp extends LitElement {
     }
 
     render() {
-        console.log(this.growthSimulationWASM);
+        console.log(this.growthSimulation);
         return html`
-            <settings-modal
-                ?open=${this.settingsOpen}
-                @closed=${this.closeSettings}
-                .settings=${this.growthSimulation?.settings}
-                @update-settings=${this.updateSettings}
-            ></settings-modal>
+            ${(this.growthSimulation.config && this.settingsOpen) ? html`
+                <settings-modal
+                    ?open=${this.settingsOpen}
+                    @closed=${this.closeSettings}
+                    .settings=${this.growthSimulation.config.settings}
+                    @update-settings=${this.updateSettings}
+                ></settings-modal>
+            ` : ''}
             <h1>Differential Growth</h1>
             <tool-bar
                 class="toolbar"

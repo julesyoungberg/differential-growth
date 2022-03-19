@@ -1,20 +1,42 @@
 import { ReactiveController, ReactiveControllerHost } from 'lit';
-import init, { GrowthSimulation } from 'growth-simulation';
+import init, { Config, GrowthSimulation } from 'growth-simulation';
 
-import { defaultSettings, Settings } from '../growth-simulation/settings';
+import { Settings } from '../growth-simulation/settings';
+
+interface Vec2 {
+    x: number;
+    y: number;
+}
+
+interface SimulationState {
+    paths: Vec2[][];
+}
 
 export default class GrowthSimulationWASM implements ReactiveController {
+    private width: number;
+    private height: number;
     private canvas?: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D | null = null;
     private running: boolean = true;
     private stopped: boolean = false;
     private simulation: GrowthSimulation | undefined;
+    config: Config | undefined;
 
-    constructor(readonly host: ReactiveControllerHost) {
+    constructor(readonly host: ReactiveControllerHost, width: number, height: number) {
         host.addController(this);
-        init().then(() => {
-            this.simulation = GrowthSimulation.new(100, 100);
-        });
+        this.width = width;
+        this.height = height;
+    }
+
+    async setupWASM() {
+        if (this.simulation) {
+            return;
+        }
+
+        await init();
+        this.simulation = GrowthSimulation.new(this.width, this.height);
+        this.config = this.simulation.get_config();
+        console.log(this.config);
     }
 
     hostConnected() {
@@ -30,13 +52,12 @@ export default class GrowthSimulationWASM implements ReactiveController {
             return;
         }
 
-        const settings = this.simulation.get_settings();
         let hasUpdate = false;
 
         Object.entries(newSettings).forEach(([key, value]) => {
-            const currentVal = (settings as any)[key];
+            const currentVal = (this.config.settings as any)[key];
             if (currentVal !== value) {
-                (settings as any)[key] = value;
+                (this.config.settings as any)[key] = value;
             }
         });
 
@@ -44,17 +65,26 @@ export default class GrowthSimulationWASM implements ReactiveController {
             return;
         }
         
-        this.simulation.update_settings(settings);
+        this.simulation.update_settings(this.config.settings);
 
         this.host.requestUpdate();
     }
 
-    setCanvas(canvas: HTMLCanvasElement) {
+    async setCanvas(canvas: HTMLCanvasElement) {
+        await this.setupWASM();
         this.canvas = canvas;
         this.updateSettings({ width: canvas.width, height: canvas.height });
         this.ctx = canvas.getContext('2d');
         this.ctx!.imageSmoothingEnabled = true;
         this.startSimulation();
+    }
+
+    isRunning() {
+        return this.running;
+    }
+
+    wasStopped() {
+        return this.stopped;
     }
 
     startSimulation() {
@@ -90,7 +120,47 @@ export default class GrowthSimulationWASM implements ReactiveController {
     }
 
     private setup() {
-        /** @todo init paths and maybe update canvas size */
+        this.simulation.setup();
+    }
+
+    private drawPath(path: Vec2[]) {
+        this.ctx!.save();
+        this.ctx!.beginPath();
+        this.ctx!.lineWidth = 1;
+        this.ctx!.strokeStyle = '#ffffff';
+
+        for (let i = 0; i < path.length; i++) {
+            let prevIndex = i - 1;
+            if (prevIndex < 0) {
+                if (!this.config.settings.cyclic) {
+                    continue;
+                }
+                prevIndex = path.length - 1;
+            }
+
+            const start = path[prevIndex];
+            const end = path[i];
+            this.ctx!.moveTo(start.x, start.y);
+            this.ctx!.lineTo(end.x, end.y);
+            this.ctx!.stroke();
+        }
+
+        this.ctx!.restore();
+    }
+
+    private draw(state: SimulationState) {
+        console.log("state", state);
+
+        this.ctx!.save();
+        this.ctx!.clearRect(0, 0, this.width, this.height);
+        this.ctx!.fillStyle = 'rgba(0,0,0,1)';
+        this.ctx!.fillRect(0, 0, this.width, this.height);
+
+        for (const path of state.paths) {
+            this.drawPath(path);
+        }
+
+        this.ctx!.restore();
     }
 
     private render() {
@@ -100,6 +170,10 @@ export default class GrowthSimulationWASM implements ReactiveController {
 
         this.simulation.update();
 
-        /** @todo get points from simulation and draw them */
+        const state: SimulationState = this.simulation.get_state();
+
+        this.draw(state);
+
+        // requestAnimationFrame(this.render.bind(this));
     }
 }
