@@ -141,6 +141,10 @@ impl Vec2 {
         Self { x: p[0], y: p[1] }
     }
 
+    pub fn as_point2(&self) -> Point2 {
+        [self.x, self.y]
+    }
+
     pub fn length(&self) -> f64 {
         (self.x * self.x + self.y * self.y).sqrt()
     }
@@ -163,24 +167,36 @@ impl Vec2 {
         let diff = *self - *other;
         diff.length()
     }
-
-    pub fn as_point2(&self) -> Point2 {
-        [self.x, self.y]
-    }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::vec2::Vec2;
+    use crate::vec2::{Point2, Vec2};
 
     #[test]
-    fn vec2_construct() {
+    fn vec2_new() {
         let v = Vec2::new(1.5, 2.0);
         assert_eq!(v.x, 1.5);
         assert_eq!(v.y, 2.0);
         let u = Vec2::new(3.14, 2.6);
         assert_eq!(u.x, 3.14);
         assert_eq!(u.y, 2.6);
+    }
+
+    #[test]
+    fn vec2_from_point2() {
+        let p: Point2 = [1.5, 1.7];
+        let v = Vec2::from_point2(&p);
+        assert_eq!(v.x, 1.5);
+        assert_eq!(v.y, 1.7);
+    }
+
+    #[test]
+    fn vec2_as_point2() {
+        let v = Vec2::new(1.5, 1.7);
+        let p = v.as_point2();
+        assert_eq!(p[0], 1.5);
+        assert_eq!(p[1], 1.7);
     }
 
     #[test]
