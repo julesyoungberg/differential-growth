@@ -107,6 +107,7 @@ export class SettingsModal extends LitElement {
     }
 
     render() {
+        console.log(settingsConfig);
         return html`
             <modal-container ?open=${this.open}>
                 <div class="settings-modal-wrapper">
@@ -122,7 +123,8 @@ export class SettingsModal extends LitElement {
                         ${Object.keys(this.settings as Record<string, number>).map((k) => {
                             const key = k as keyof Settings;
                             const config = settingsConfig[key];
-                            return html`
+                            console.log(key, config);
+                            return config ? html`
                                 <range-slider
                                     label=${config.label}
                                     min=${config.min}
@@ -131,7 +133,7 @@ export class SettingsModal extends LitElement {
                                     value=${this.settings?.[key] || 0}
                                     @change=${(event: CustomEvent) => this.onSettingChange(key, event)}
                                 ></range-slider>
-                            `;
+                            ` : html``;
                         })}
                     </div>
                     <button-element @click=${this.randomize}>Randomize</button-element>
