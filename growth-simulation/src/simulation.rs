@@ -11,7 +11,7 @@ use crate::vec2::{Point2, Vec2};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SimulationState {
-    paths: Vec<Vec<Vec2>>,
+    paths: Vec<Path>,
 }
 
 #[wasm_bindgen]
@@ -107,7 +107,7 @@ impl GrowthSimulation {
 
     pub fn get_state(&self) -> JsValue {
         let state = SimulationState {
-            paths: self.path_vecs(),
+            paths: self.paths.clone(),
         };
 
         JsValue::from_serde(&state).unwrap()

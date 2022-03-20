@@ -1,11 +1,12 @@
 use rstar::{RTree, AABB};
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use crate::config::Settings;
 use crate::vec2::{Point2, Vec2};
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Node {
     pub position: Vec2,
     pub velocity: Vec2,

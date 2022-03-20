@@ -1,6 +1,7 @@
 use std::vec::Vec;
 
 use rstar::RTree;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::console_log;
 
@@ -9,7 +10,7 @@ use crate::node::Node;
 use crate::vec2::{Point2, Vec2};
 
 #[wasm_bindgen]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Path {
     cyclic: bool,
     nodes: Vec<Node>,
@@ -59,16 +60,16 @@ impl Path {
 
             if let Some(prev_node) = neighbors.prev_node {
                 if let Some(next_node) = neighbors.next_node {
-                    if next_node.distance(&self.nodes[i]) > settings.max_edge_length {
+                    if next_node.distance(&self.nodes[index]) > settings.max_edge_length {
                         // console_log!("NEW NODE AT INDEX: {}", index);
                         let position = (prev_node.position + next_node.position) / 2.0;
                         let new_node = Node::new_with_position(position);
                         new_nodes = true;
 
-                        if i == 0 {
+                        if index == 0 {
                             self.nodes.push(new_node);
                         } else {
-                            self.nodes.splice(i..i, vec![new_node]);
+                            self.nodes.splice(index..index, vec![new_node]);
                         }
                     }
                 }
