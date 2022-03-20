@@ -1,22 +1,19 @@
 use std::vec::Vec;
 
 use rstar::RTree;
-use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 use wasm_bindgen_test::console_log;
 
 use crate::config::{Config, InitializationConfig, InitializationType, RecordingConfig, Settings};
 use crate::path::Path;
-use crate::vec2::{Point2, Vec2};
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SimulationState {
-    paths: Vec<Path>,
-}
+use crate::utils;
+use crate::vec2::Point2;
 
 #[wasm_bindgen]
 #[derive(Clone, Debug)]
 pub struct GrowthSimulation {
+    ctx: Option<web_sys::CanvasRenderingContext2d>,
     config: Config,
     paths: Vec<Path>,
 }
@@ -25,10 +22,43 @@ pub struct GrowthSimulation {
 impl GrowthSimulation {
     pub fn new(width: u32, height: u32) -> Self {
         console_log!("creating growth simulation");
+        utils::set_panic_hook();
         Self {
+            ctx: None,
             config: Config::new(width, height),
             paths: vec![],
         }
+    }
+
+    pub fn set_canvas(&mut self, id: String) {
+        let document = web_sys::window().unwrap().document().unwrap();
+        let app_container = document
+            .query_selector("my-app")
+            .unwrap()
+            .unwrap()
+            .dyn_into::<web_sys::HtmlElement>()
+            .unwrap();
+
+        let selector = format!("#{}", id);
+        console_log!("selecting {}", selector);
+        let canvas: web_sys::HtmlCanvasElement = app_container
+            .shadow_root()
+            .unwrap()
+            .query_selector(selector.as_str())
+            .unwrap()
+            .unwrap()
+            .dyn_into::<web_sys::HtmlCanvasElement>()
+            .map_err(|_| ())
+            .unwrap();
+
+        let context = canvas
+            .get_context("2d")
+            .unwrap()
+            .unwrap()
+            .dyn_into::<web_sys::CanvasRenderingContext2d>()
+            .unwrap();
+
+        self.ctx = Some(context);
     }
 
     pub fn add_path(&mut self, path: Path) {
@@ -84,6 +114,34 @@ impl GrowthSimulation {
         self.paths = vec![];
     }
 
+    pub fn draw(&self) {
+        let ctx = self.ctx.as_ref().unwrap();
+
+        ctx.save();
+
+        ctx.clear_rect(
+            0.0,
+            0.0,
+            self.config.settings.width as f64,
+            self.config.settings.height as f64,
+        );
+
+        ctx.set_fill_style(&"#000000".into());
+
+        ctx.fill_rect(
+            0.0,
+            0.0,
+            self.config.settings.width as f64,
+            self.config.settings.height as f64,
+        );
+
+        for path in self.paths.iter() {
+            path.draw(ctx);
+        }
+
+        ctx.restore();
+    }
+
     pub fn update(&mut self) {
         /* @todo do this asynchronously between update calls */
         let rtree = RTree::bulk_load(self.all_points());
@@ -91,6 +149,8 @@ impl GrowthSimulation {
         for path in self.paths.iter_mut() {
             path.update(&self.config.settings, &rtree);
         }
+
+        self.draw();
     }
 
     fn path_points(&self) -> Vec<Vec<Point2>> {
@@ -99,17 +159,5 @@ impl GrowthSimulation {
 
     fn all_points(&self) -> Vec<Point2> {
         self.path_points().into_iter().flatten().collect()
-    }
-
-    fn path_vecs(&self) -> Vec<Vec<Vec2>> {
-        self.paths.iter().map(|p| p.node_positions()).collect()
-    }
-
-    pub fn get_state(&self) -> JsValue {
-        let state = SimulationState {
-            paths: self.paths.clone(),
-        };
-
-        JsValue::from_serde(&state).unwrap()
     }
 }

@@ -1,5 +1,5 @@
 import { css, html, LitElement } from 'lit';
-import { customElement, query, state } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 
 import './components/button-element';
 import './components/settings-modal';
@@ -16,9 +16,6 @@ const HEIGHT = 800;
 export class MyApp extends LitElement {
     @state()
     private settingsOpen: boolean = false;
-
-    @query(`#${CANVAS_ID}`)
-    private canvas?: HTMLCanvasElement;
 
     private growthSimulation = new GrowthSimulationWASM(this, WIDTH, HEIGHT);
 
@@ -42,12 +39,7 @@ export class MyApp extends LitElement {
     `;
 
     firstUpdated() {
-        if (this.canvas) {
-            this.growthSimulation.setCanvas(this.canvas);
-            // setTimeout(() => this.growthSimulation.stopSimulation(), 60000);
-        } else {
-            throw Error('No canvas found');
-        }
+        this.growthSimulation.setCanvas(CANVAS_ID);
     }
 
     private openSettings() {

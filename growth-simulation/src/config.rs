@@ -5,16 +5,16 @@ use wasm_bindgen::prelude::*;
 pub struct Settings {
     pub width: u32,
     pub height: u32,
-    pub max_speed: f32,
-    pub max_force: f32,
-    pub separation_distance: f32,
-    pub attraction_distance: f32,
-    pub alignment_weight: f32,
-    pub attraction_weight: f32,
-    pub separation_weight: f32,
-    pub max_edge_length: f32,
-    pub min_edge_length: f32,
-    pub injection_probability: f32,
+    pub max_speed: f64,
+    pub max_force: f64,
+    pub separation_distance: f64,
+    pub attraction_distance: f64,
+    pub alignment_weight: f64,
+    pub attraction_weight: f64,
+    pub separation_weight: f64,
+    pub max_edge_length: f64,
+    pub min_edge_length: f64,
+    pub injection_probability: f64,
 }
 
 #[wasm_bindgen]
@@ -54,7 +54,7 @@ impl RecordingConfig {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct PolygonConfig {
     pub n_sides: u32,
-    pub radius: f32,
+    pub radius: f64,
 }
 
 #[wasm_bindgen]

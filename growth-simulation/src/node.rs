@@ -45,7 +45,7 @@ impl Node {
         }
     }
 
-    pub fn distance(&self, other: &Node) -> f32 {
+    pub fn distance(&self, other: &Node) -> f64 {
         self.position.distance(&other.position)
     }
 
@@ -93,7 +93,7 @@ impl Node {
         }
 
         if near_nodes > 0 {
-            total_force /= near_nodes as f32;
+            total_force /= near_nodes as f64;
         }
 
         if total_force.length() > 0.0 {
@@ -130,7 +130,7 @@ impl Node {
         self.add_force(steer);
     }
 
-    fn get_neighbors<'a>(&self, rtree: &'a RTree<Point2>, radius: f32) -> Vec<&'a Point2> {
+    fn get_neighbors<'a>(&self, rtree: &'a RTree<Point2>, radius: f64) -> Vec<&'a Point2> {
         let bottom_corner = self.position - radius;
         let top_corner = self.position + radius;
         let radius_square = AABB::from_corners(bottom_corner.as_point2(), top_corner.as_point2());

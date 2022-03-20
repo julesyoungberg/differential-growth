@@ -17,9 +17,6 @@ interface Path {
     nodes: Node[];
 }
 
-interface SimulationState {
-    paths: Path[];
-}
 
 export default class GrowthSimulationWASM implements ReactiveController {
     private width: number;
@@ -78,11 +75,9 @@ export default class GrowthSimulationWASM implements ReactiveController {
         this.host.requestUpdate();
     }
 
-    async setCanvas(canvas: HTMLCanvasElement) {
+    async setCanvas(id: string) {
         await this.setupWASM();
-        this.updateSettings({ width: canvas.width, height: canvas.height });
-        this.ctx = canvas.getContext('2d');
-        this.ctx!.imageSmoothingEnabled = true;
+        this.simulation.set_canvas(id);
         this.startSimulation();
     }
 
@@ -95,11 +90,6 @@ export default class GrowthSimulationWASM implements ReactiveController {
     }
 
     startSimulation() {
-        // confirm context exists
-        if (!this.ctx) {
-            throw new Error(`Unable to creating drawing context.`);
-        }
-
         // start simulation
         this.running = true;
         this.stopped = false;
@@ -130,56 +120,12 @@ export default class GrowthSimulationWASM implements ReactiveController {
         this.simulation.setup();
     }
 
-    private drawPath(path: Path) {
-        this.ctx!.save();
-        this.ctx!.beginPath();
-        this.ctx!.lineWidth = 1;
-        this.ctx!.strokeStyle = '#ffffff';
-
-        for (let i = 0; i < path.nodes.length; i++) {
-            let prevIndex = i - 1;
-            if (prevIndex < 0) {
-                if (!path.cyclic) {
-                    continue;
-                }
-                prevIndex = path.nodes.length - 1;
-            }
-
-            const start = path.nodes[prevIndex].position;
-            const end = path.nodes[i].position;
-            this.ctx!.moveTo(start.x, start.y);
-            this.ctx!.lineTo(end.x, end.y);
-            this.ctx!.stroke();
-        }
-
-        this.ctx!.restore();
-    }
-
-    private draw(state: SimulationState) {
-        console.log("state", state);
-
-        this.ctx!.save();
-        this.ctx!.clearRect(0, 0, this.width, this.height);
-        this.ctx!.fillStyle = 'rgba(0,0,0,1)';
-        this.ctx!.fillRect(0, 0, this.width, this.height);
-
-        for (const path of state.paths) {
-            this.drawPath(path);
-        }
-
-        this.ctx!.restore();
-    }
-
     private render() {
         if (!(this.running && this.simulation)) {
             return;
         }
 
         this.simulation.update();
-
-        const state: SimulationState = this.simulation.get_state();
-
-        this.draw(state);
 
         requestAnimationFrame(this.render.bind(this));
     }

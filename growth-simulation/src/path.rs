@@ -137,13 +137,32 @@ impl Path {
         }
     }
 
+    pub fn draw(&self, ctx: &web_sys::CanvasRenderingContext2d) {
+        ctx.save();
+        ctx.begin_path();
+        ctx.set_line_width(1.0);
+        ctx.set_stroke_style(&"#ffffff".into());
+
+        for (index, node) in self.nodes.iter().enumerate() {
+            let neighbors = self.get_neighbor_nodes(index);
+
+            if let Some(prev_node) = neighbors.prev_node {
+                ctx.move_to(prev_node.position.x, prev_node.position.y);
+                ctx.line_to(node.position.x, node.position.y);
+                ctx.stroke();
+            }
+        }
+
+        ctx.restore();
+    }
+
     pub fn horizontal(settings: &Settings) -> Self {
         let mut nodes = vec![];
-        let y = settings.height as f32 / 2.0;
-        let n_nodes = (settings.width as f32 / settings.max_edge_length).round() as u32;
+        let y = settings.height as f64 / 2.0;
+        let n_nodes = (settings.width as f64 / settings.max_edge_length).round() as u32;
 
         for i in 0..n_nodes {
-            let x = (i as f32 / (n_nodes - 1) as f32) * settings.width as f32;
+            let x = (i as f64 / (n_nodes - 1) as f64) * settings.width as f64;
             let node = Node::new_with_position(Vec2::new(x, y));
             nodes.push(node);
         }
@@ -153,11 +172,11 @@ impl Path {
 
     pub fn vertical(settings: &Settings) -> Self {
         let mut nodes = vec![];
-        let x = settings.width as f32 / 2.0;
-        let n_nodes = (settings.height as f32 / settings.max_edge_length).round() as u32;
+        let x = settings.width as f64 / 2.0;
+        let n_nodes = (settings.height as f64 / settings.max_edge_length).round() as u32;
 
         for i in 0..n_nodes {
-            let y = (i as f32 / (n_nodes - 1) as f32) * settings.height as f32;
+            let y = (i as f64 / (n_nodes - 1) as f64) * settings.height as f64;
             let node = Node::new_with_position(Vec2::new(x, y));
             nodes.push(node);
         }
@@ -167,10 +186,10 @@ impl Path {
 
     pub fn polygon(settings: &Settings, config: PolygonConfig) -> Self {
         let mut nodes = vec![];
-        let center = Vec2::new(settings.width as f32 / 2.0, settings.height as f32 / 2.0);
+        let center = Vec2::new(settings.width as f64 / 2.0, settings.height as f64 / 2.0);
 
         for i in 0..config.n_sides {
-            let angle = (i as f32 / config.n_sides as f32) * std::f32::consts::PI * 2.0;
+            let angle = (i as f64 / config.n_sides as f64) * std::f64::consts::PI * 2.0;
             let x = angle.cos() * config.radius;
             let y = angle.sin() * config.radius;
             let node = Node::new_with_position(center + Vec2::new(x, y));

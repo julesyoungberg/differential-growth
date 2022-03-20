@@ -3,13 +3,13 @@ use std::ops;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
-pub type Point2 = [f32; 2];
+pub type Point2 = [f64; 2];
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Vec2 {
-    x: f32,
-    y: f32,
+    pub x: f64,
+    pub y: f64,
 }
 
 impl ops::Add<Vec2> for Vec2 {
@@ -32,10 +32,10 @@ impl ops::AddAssign for Vec2 {
     }
 }
 
-impl ops::Add<f32> for Vec2 {
+impl ops::Add<f64> for Vec2 {
     type Output = Vec2;
 
-    fn add(self, val: f32) -> Self {
+    fn add(self, val: f64) -> Self {
         Self {
             x: self.x + val,
             y: self.y + val,
@@ -43,8 +43,8 @@ impl ops::Add<f32> for Vec2 {
     }
 }
 
-impl ops::AddAssign<f32> for Vec2 {
-    fn add_assign(&mut self, val: f32) {
+impl ops::AddAssign<f64> for Vec2 {
+    fn add_assign(&mut self, val: f64) {
         *self = Self {
             x: self.x + val,
             y: self.y + val,
@@ -72,10 +72,10 @@ impl ops::SubAssign for Vec2 {
     }
 }
 
-impl ops::Sub<f32> for Vec2 {
+impl ops::Sub<f64> for Vec2 {
     type Output = Vec2;
 
-    fn sub(self, val: f32) -> Self {
+    fn sub(self, val: f64) -> Self {
         Self {
             x: self.x - val,
             y: self.y - val,
@@ -83,8 +83,8 @@ impl ops::Sub<f32> for Vec2 {
     }
 }
 
-impl ops::SubAssign<f32> for Vec2 {
-    fn sub_assign(&mut self, val: f32) {
+impl ops::SubAssign<f64> for Vec2 {
+    fn sub_assign(&mut self, val: f64) {
         *self = Self {
             x: self.x - val,
             y: self.y - val,
@@ -92,10 +92,10 @@ impl ops::SubAssign<f32> for Vec2 {
     }
 }
 
-impl ops::Mul<f32> for Vec2 {
+impl ops::Mul<f64> for Vec2 {
     type Output = Vec2;
 
-    fn mul(self, scale: f32) -> Self {
+    fn mul(self, scale: f64) -> Self {
         Self {
             x: self.x * scale,
             y: self.y * scale,
@@ -103,8 +103,8 @@ impl ops::Mul<f32> for Vec2 {
     }
 }
 
-impl ops::MulAssign<f32> for Vec2 {
-    fn mul_assign(&mut self, scale: f32) {
+impl ops::MulAssign<f64> for Vec2 {
+    fn mul_assign(&mut self, scale: f64) {
         *self = Self {
             x: self.x * scale,
             y: self.y * scale,
@@ -112,10 +112,10 @@ impl ops::MulAssign<f32> for Vec2 {
     }
 }
 
-impl ops::Div<f32> for Vec2 {
+impl ops::Div<f64> for Vec2 {
     type Output = Vec2;
 
-    fn div(self, den: f32) -> Self {
+    fn div(self, den: f64) -> Self {
         Self {
             x: self.x / den,
             y: self.y / den,
@@ -123,8 +123,8 @@ impl ops::Div<f32> for Vec2 {
     }
 }
 
-impl ops::DivAssign<f32> for Vec2 {
-    fn div_assign(&mut self, den: f32) {
+impl ops::DivAssign<f64> for Vec2 {
+    fn div_assign(&mut self, den: f64) {
         *self = Self {
             x: self.x / den,
             y: self.y / den,
@@ -133,7 +133,7 @@ impl ops::DivAssign<f32> for Vec2 {
 }
 
 impl Vec2 {
-    pub fn new(x: f32, y: f32) -> Self {
+    pub fn new(x: f64, y: f64) -> Self {
         Self { x, y }
     }
 
@@ -141,7 +141,7 @@ impl Vec2 {
         Self { x: p[0], y: p[1] }
     }
 
-    pub fn length(&self) -> f32 {
+    pub fn length(&self) -> f64 {
         (self.x * self.x + self.y * self.y).sqrt()
     }
 
@@ -152,14 +152,14 @@ impl Vec2 {
         }
     }
 
-    pub fn limit(&mut self, mag: f32) {
+    pub fn limit(&mut self, mag: f64) {
         let length = self.length();
         if length > mag {
             *self *= mag / length;
         }
     }
 
-    pub fn distance(&self, other: &Vec2) -> f32 {
+    pub fn distance(&self, other: &Vec2) -> f64 {
         let diff = *self - *other;
         diff.length()
     }
