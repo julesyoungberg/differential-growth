@@ -284,18 +284,18 @@ mod tests {
     fn vec2_normalize() {
         let mut v = Vec2::new(1.0, 2.0);
         v.normalize();
-        assert_eq!(v.length(), 1.0);
+        assert_eq!(v.length().round(), 1.0);
     }
 
     #[test]
     fn vec2_limit() {
         let mut v = Vec2::new(2.0, 1.0);
         v.limit(2.0);
-        assert_eq!(v.length(), 2.0);
+        assert_eq!(v.length().round(), 2.0);
         v = Vec2::new(0.5, 0.2);
         let length = v.length();
         v.limit(2.0);
-        assert_eq!(v.length(), length);
+        assert_eq!(v.length().round(), length.round());
     }
 
     #[test]
