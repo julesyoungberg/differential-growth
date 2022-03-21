@@ -10,11 +10,16 @@ use crate::vec2::{Point2, Vec2};
 pub struct Node {
     pub position: Vec2,
     pub velocity: Vec2,
-    acceleration: Vec2,
+    pub acceleration: Vec2,
+}
+
+impl Default for Node {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[derive(Clone, Copy, Debug)]
-
 enum InteractionType {
     Attract,
     Avoid,
@@ -138,5 +143,75 @@ impl Node {
             .locate_in_envelope(&radius_square)
             .into_iter()
             .collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::config::Settings;
+    use crate::node::Node;
+    use crate::vec2::Vec2;
+
+    #[test]
+    fn node_new() {
+        let node = Node::new();
+        assert_eq!(node.position.x, 0.0);
+        assert_eq!(node.position.y, 0.0);
+        assert_eq!(node.velocity.x, 0.0);
+        assert_eq!(node.velocity.y, 0.0);
+        assert_eq!(node.acceleration.x, 0.0);
+        assert_eq!(node.acceleration.y, 0.0);
+    }
+
+    #[test]
+    fn node_new_with_position() {
+        let position = Vec2::new(1.3, 2.75);
+        let node = Node::new_with_position(position);
+        assert_eq!(node.position.x, position.x);
+        assert_eq!(node.position.y, position.y);
+    }
+
+    #[test]
+    fn node_new_with_position_and_velocity() {
+        let position = Vec2::new(1.5, 2.6);
+        let velocity = Vec2::new(3.2, -1.6);
+        let node = Node::new_with_position_and_velocity(position, velocity);
+        assert_eq!(node.position.x, position.x);
+        assert_eq!(node.position.y, position.y);
+        assert_eq!(node.velocity.x, velocity.x);
+        assert_eq!(node.velocity.y, velocity.y);
+    }
+
+    #[test]
+    fn node_distance() {
+        let node1 = Node::new_with_position(Vec2::new(1.0, 2.0));
+        let node2 = Node::new_with_position(Vec2::new(2.0, -1.0));
+        let distance = node1.distance(&node2);
+        assert!(distance > 3.16227 && distance < 3.16228);
+    }
+
+    #[test]
+    fn node_add_force() {
+        let mut node = Node::new();
+        node.add_force(Vec2::new(1.0, 2.0));
+        node.add_force(Vec2::new(2.0, -1.0));
+        assert_eq!(node.acceleration.x, 3.0);
+        assert_eq!(node.acceleration.y, 1.0);
+    }
+
+    #[test]
+    fn node_update() {
+        let mut node =
+            Node::new_with_position_and_velocity(Vec2::new(-2.0, 2.0), Vec2::new(1.0, -1.0));
+        node.add_force(Vec2::new(1.0, 2.0));
+        node.add_force(Vec2::new(2.0, -1.0));
+        let settings = Settings::new(100, 100);
+        node.update(&settings);
+        assert_eq!(node.position.x, 2.0);
+        assert_eq!(node.position.y, 2.0);
+        assert_eq!(node.velocity.x, 4.0);
+        assert_eq!(node.velocity.y, 0.0);
+        assert_eq!(node.acceleration.x, 0.0);
+        assert_eq!(node.acceleration.y, 0.0);
     }
 }

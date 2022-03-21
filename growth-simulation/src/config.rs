@@ -50,6 +50,12 @@ impl RecordingConfig {
     }
 }
 
+impl Default for RecordingConfig {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct PolygonConfig {
@@ -64,6 +70,12 @@ impl PolygonConfig {
             n_sides: 200,
             radius: 300.0,
         }
+    }
+}
+
+impl Default for PolygonConfig {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -89,6 +101,12 @@ impl InitializationConfig {
             init_type: InitializationType::Polygon,
             polygon_config: Some(PolygonConfig::new()),
         }
+    }
+}
+
+impl Default for InitializationConfig {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

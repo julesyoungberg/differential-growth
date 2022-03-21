@@ -66,7 +66,7 @@ impl GrowthSimulation {
     }
 
     pub fn get_config(&self) -> Config {
-        self.config.clone()
+        self.config
     }
 
     pub fn update_config(&mut self, new_config: Config) {

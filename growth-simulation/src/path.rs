@@ -34,15 +34,15 @@ impl Path {
         };
 
         if index > 0 {
-            neighbor_nodes.prev_node = Some(self.nodes[index - 1].clone());
+            neighbor_nodes.prev_node = Some(self.nodes[index - 1]);
         } else if self.cyclic {
-            neighbor_nodes.prev_node = Some(self.nodes[self.nodes.len() - 1].clone());
+            neighbor_nodes.prev_node = Some(self.nodes[self.nodes.len() - 1]);
         }
 
         if index < self.nodes.len() - 1 {
-            neighbor_nodes.next_node = Some(self.nodes[index + 1].clone());
+            neighbor_nodes.next_node = Some(self.nodes[index + 1]);
         } else if self.cyclic {
-            neighbor_nodes.next_node = Some(self.nodes[0].clone());
+            neighbor_nodes.next_node = Some(self.nodes[0]);
         }
 
         neighbor_nodes
@@ -121,7 +121,7 @@ impl Path {
     }
 
     pub fn node_positions(&self) -> Vec<Vec2> {
-        self.nodes.iter().map(|n| n.position.clone()).collect()
+        self.nodes.iter().map(|n| n.position).collect()
     }
 
     pub fn node_points(&self) -> Vec<Point2> {
