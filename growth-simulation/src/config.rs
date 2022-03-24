@@ -24,12 +24,12 @@ impl Settings {
             width,
             height,
             max_speed: 1.0,
-            max_force: 0.4,
-            separation_distance: 5.0,
+            max_force: 0.55,
+            separation_distance: 20.0,
             attraction_distance: 70.0,
-            alignment_weight: 1.0,
+            alignment_weight: 1.1,
             attraction_weight: 1.0,
-            separation_weight: 1.0,
+            separation_weight: 1.01,
             max_edge_length: 5.0,
             min_edge_length: 1.0,
             injection_probability: 0.5,
@@ -67,8 +67,8 @@ pub struct PolygonConfig {
 impl PolygonConfig {
     pub fn new() -> Self {
         Self {
-            n_sides: 200,
-            radius: 300.0,
+            n_sides: 50,
+            radius: 100.0,
         }
     }
 }
