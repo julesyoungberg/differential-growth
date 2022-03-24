@@ -65,8 +65,8 @@ impl GrowthSimulation {
         self.paths.push(path);
     }
 
-    pub fn get_config(&self) -> Config {
-        self.config
+    pub fn get_config(&self) -> JsValue {
+        JsValue::from_serde(&self.config).unwrap()
     }
 
     pub fn update_config(&mut self, new_config: Config) {

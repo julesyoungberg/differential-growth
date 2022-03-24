@@ -36,7 +36,7 @@ export default class Path {
                 continue;
             }
 
-            if (previousNode.distance(this.nodes[i]) > this.settings.maxEdgeLength) {
+            if (previousNode.distance(this.nodes[i]) > this.settings.max_edge_length) {
                 const newNode = new Node(Vector2.add(previousNode.position, nextNode.position).div(2));
                 if (i === 0) {
                     this.nodes.splice(this.nodes.length, 0, newNode);
@@ -58,7 +58,7 @@ export default class Path {
                 continue;
             }
 
-            if (previousNode.distance(this.nodes[index]) < this.settings.minEdgeLength) {
+            if (previousNode.distance(this.nodes[index]) < this.settings.min_edge_length) {
                 if (index === 0) {
                     this.nodes.splice(this.nodes.length - 1, 1);
                 } else {
@@ -72,7 +72,7 @@ export default class Path {
     //     const index = Math.round(Math.random() * (this.nodes.length - 2)) + 1;
     //     const { previousNode, nextNode } = this.getNeighborNodes(index);
 
-    //     if (previousNode && nextNode && previousNode.distance(this.nodes[index]) > this.settings.minEdgeLength) {
+    //     if (previousNode && nextNode && previousNode.distance(this.nodes[index]) > this.settings.min_edge_length) {
     //         const newNode = new Node(Vector2.add(previousNode.position, nextNode.position).div(2));
     //         if (index === 0) {
     //             this.nodes.splice(this.nodes.length, 0, newNode);
@@ -87,8 +87,8 @@ export default class Path {
             const node = this.nodes[i];
             const neighbors = rbush.searchNear(
                 node.position,
-                this.settings.separationDistance,
-                // Math.max(this.settings.separationDistance, this.settings.attractionDistance)
+                this.settings.separation_distance,
+                // Math.max(this.settings.separation_distance, this.settings.attraction_distance)
             );
             const neighborNodes = neighbors.map((n) => n.node);
             // node.attract(neighborNodes, this.settings);
@@ -108,7 +108,7 @@ export default class Path {
 
         this.pruneNodes();
 
-        // if (Math.random() < this.settings.injectionProbability) {
+        // if (Math.random() < this.settings.injection_probability) {
         //     this.injectRandomNode();
         // }
     }

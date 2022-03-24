@@ -107,7 +107,7 @@ export class SettingsModal extends LitElement {
     }
 
     render() {
-        console.log(settingsConfig);
+        console.log("settings", this.settings)
         return html`
             <modal-container ?open=${this.open}>
                 <div class="settings-modal-wrapper">
@@ -120,10 +120,9 @@ export class SettingsModal extends LitElement {
                         `)}
                     </div>
                     <div class="controls">
-                        ${Object.keys(this.settings as Record<string, number>).map((k) => {
+                        ${Object.keys(settingsConfig).map((k) => {
                             const key = k as keyof Settings;
                             const config = settingsConfig[key];
-                            console.log(key, config);
                             return config ? html`
                                 <range-slider
                                     label=${config.label}

@@ -1,7 +1,8 @@
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Settings {
     pub width: u32,
     pub height: u32,
@@ -24,10 +25,10 @@ impl Settings {
             width,
             height,
             max_speed: 1.0,
-            max_force: 0.55,
+            max_force: 0.5,
             separation_distance: 20.0,
             attraction_distance: 70.0,
-            alignment_weight: 1.1,
+            alignment_weight: 1.15,
             attraction_weight: 1.0,
             separation_weight: 1.01,
             max_edge_length: 5.0,
@@ -38,7 +39,7 @@ impl Settings {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct RecordingConfig {
     pub recording: bool,
 }
@@ -57,7 +58,7 @@ impl Default for RecordingConfig {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PolygonConfig {
     pub n_sides: u32,
     pub radius: f64,
@@ -80,7 +81,7 @@ impl Default for PolygonConfig {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum InitializationType {
     HorizontalLine,
     VerticalLine,
@@ -88,7 +89,7 @@ pub enum InitializationType {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct InitializationConfig {
     pub init_type: InitializationType,
     pub polygon_config: Option<PolygonConfig>,
@@ -111,7 +112,7 @@ impl Default for InitializationConfig {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Config {
     pub settings: Settings,
     pub initialization: InitializationConfig,

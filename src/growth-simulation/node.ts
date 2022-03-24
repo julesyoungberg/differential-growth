@@ -26,7 +26,7 @@ export default class Node {
 
     update(settings: Settings) {
         this.velocity.add(this.acceleration);
-        this.velocity.limit(settings.maxSpeed);
+        this.velocity.limit(settings.max_speed);
         this.position.add(this.velocity);
         this.acceleration = new Vector2();
     }
@@ -38,7 +38,7 @@ export default class Node {
         for (const other of others) {
             const distance = this.distance(other);
 
-            if (distance > 0.0 && distance < settings.attractionDistance) {
+            if (distance > 0.0 && distance < settings.attraction_distance) {
                 const force = Vector2.sub(other.position, this.position);
                 force.normalize();
                 force.div(distance);
@@ -53,10 +53,10 @@ export default class Node {
 
         if (attractionForce.length() > 0) {
             attractionForce.normalize();
-            attractionForce.mul(settings.maxSpeed);
+            attractionForce.mul(settings.max_speed);
             attractionForce.sub(this.velocity);
-            attractionForce.limit(settings.maxForce);
-            attractionForce.mul(settings.attractionWeight);
+            attractionForce.limit(settings.max_force);
+            attractionForce.mul(settings.attraction_weight);
             this.addForce(attractionForce);
         }
     }
@@ -68,7 +68,7 @@ export default class Node {
         for (const other of others) {
             const distance = this.distance(other);
 
-            if (distance > 0.0 && distance < settings.separationDistance) {
+            if (distance > 0.0 && distance < settings.separation_distance) {
                 const force = Vector2.sub(this.position, other.position);
                 force.normalize();
                 force.div(distance);
@@ -83,10 +83,10 @@ export default class Node {
 
         if (separationForce.length() > 0) {
             separationForce.normalize();
-            separationForce.mul(settings.maxSpeed);
+            separationForce.mul(settings.max_speed);
             separationForce.sub(this.velocity);
-            separationForce.limit(settings.maxForce);
-            separationForce.mul(settings.separationWeight);
+            separationForce.limit(settings.max_force);
+            separationForce.mul(settings.separtion_weight);
             this.addForce(separationForce);
         }
     }
@@ -95,9 +95,9 @@ export default class Node {
         const target = Vector2.add(prev.position, next.position).div(2.0);
         const desiredVelocity = Vector2.sub(target, this.position);
         desiredVelocity.normalize();
-        desiredVelocity.mul(settings.maxSpeed);
+        desiredVelocity.mul(settings.max_speed);
         const steer = Vector2.sub(desiredVelocity, this.velocity);
-        steer.limit(settings.maxForce);
-        this.addForce(steer.mul(settings.alignmentWeight));
+        steer.limit(settings.max_force);
+        this.addForce(steer.mul(settings.alignment_weight));
     }
 }

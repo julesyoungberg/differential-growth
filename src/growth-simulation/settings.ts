@@ -1,74 +1,74 @@
 export const defaultSettings = {
     width: 0,
     height: 0,
-    maxSpeed: 1.0,
-    maxForce: 0.9,
-    separationDistance: 10.0,
-    attractionDistance: 70.0,
-    alignmentWeight: 1.0,
-    attractionWeight: 1.0,
-    separationWeight: 1.0,
-    maxEdgeLength: 5.0,
-    minEdgeLength: 1.0,
-    injectionProbability: 0.5,
+    max_speed: 1.0,
+    max_force: 0.9,
+    separation_distance: 10.0,
+    attraction_distance: 70.0,
+    alignment_weight: 1.0,
+    attraction_weight: 1.0,
+    separtion_weight: 1.0,
+    max_edge_length: 5.0,
+    min_edge_length: 1.0,
+    injection_probability: 0.5,
 };
 
 export const settingsConfig = {
-    maxSpeed: {
+    max_speed: {
         label: 'Max Speed',
         min: 0,
         max: 1,
         step: 0.01,
     },
-    maxForce: {
+    max_force: {
         label: 'Max Force',
         min: 0,
         max: 1,
         step: 0.01,
     },
-    separationDistance: {
+    separation_distance: {
         label: 'Separation Distance',
         min: 0,
         max: 100,
         step: 1,
     },
-    attractionDistance: {
+    attraction_distance: {
         label: 'Attraction Distance',
         min: 0,
         max: 100,
         step: 1,
     },
-    alignmentWeight: {
+    alignment_weight: {
         label: 'Alignment Weight',
         min: 0,
         max: 2,
         step: 0.01,
     },
-    attractionWeight: {
+    attraction_weight: {
         label: 'Attraction Weight',
         min: 0,
         max: 2,
         step: 0.01,
     },
-    separationWeight: {
+    separtion_weight: {
         label: 'Separation Weight',
         min: 0,
         max: 2,
         step: 0.01,
     },
-    maxEdgeLength: {
+    max_edge_length: {
         label: 'Max Edge Length',
         min: 1,
         max: 100,
         step: 0.1,
     },
-    minEdgeLength: {
+    min_edge_length: {
         label: 'Min Edge Length',
         min: 0,
         max: 5,
         step: 0.1,
     },
-    injectionProbability: {
+    injection_probability: {
         label: 'Injection Probability',
         min: 0,
         max: 1,
