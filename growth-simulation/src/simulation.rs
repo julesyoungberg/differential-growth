@@ -69,28 +69,33 @@ impl GrowthSimulation {
         JsValue::from_serde(&self.config).unwrap()
     }
 
-    pub fn update_config(&mut self, new_config: Config) {
+    pub fn update_config(&mut self, val: &JsValue) {
         console_log!("updating config");
-        self.config = new_config;
+        let config: Config = val.into_serde().unwrap();
+        self.config = config;
     }
 
-    pub fn update_settings(&mut self, new_settings: Settings) {
+    pub fn update_settings(&mut self, val: &JsValue) {
         console_log!("updating settings");
+        let new_settings: Settings = val.into_serde().unwrap();
         self.config.settings = new_settings;
     }
 
-    pub fn update_initialization(&mut self, init: InitializationConfig) {
+    pub fn update_initialization(&mut self, val: &JsValue) {
         console_log!("updating initialization");
+        let init: InitializationConfig = val.into_serde().unwrap();
         self.config.initialization = init;
     }
 
-    pub fn update_recording(&mut self, rec: RecordingConfig) {
+    pub fn update_recording(&mut self, val: &JsValue) {
         console_log!("updating recording");
+        let rec: RecordingConfig = val.into_serde().unwrap();
         self.config.recording = rec;
     }
 
     pub fn setup(&mut self) {
         console_log!("SETUP");
+        self.paths = vec![];
         match self.config.initialization.init_type {
             InitializationType::HorizontalLine => {
                 self.paths.push(Path::horizontal(&self.config.settings))

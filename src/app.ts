@@ -79,7 +79,6 @@ export class MyApp extends LitElement {
     }
 
     render() {
-        console.log(this.growthSimulation);
         return html`
             ${(this.growthSimulation.config && this.settingsOpen) ? html`
                 <settings-modal

@@ -53,31 +53,17 @@ export default class GrowthSimulationWASM implements ReactiveController {
     }
 
     updateSettings(newSettings: Partial<Settings>) {
-        if (!this.simulation) {
+        if (!this.config) {
             return;
         }
 
-        let hasUpdate = false;
-
-        Object.entries(newSettings).forEach(([key, value]) => {
-            const currentVal = (this.config.settings as any)[key];
-            if (currentVal !== value) {
-                (this.config.settings as any)[key] = value;
-            }
-        });
-
-        if (!hasUpdate) {
-            return;
-        }
-        
-        this.simulation.update_settings(this.config.settings);
-
+        this.config.settings = { ...this.config.settings, ...newSettings } as any;
         this.host.requestUpdate();
     }
 
     async setCanvas(id: string) {
         await this.setupWASM();
-        this.simulation.set_canvas(id);
+        this.simulation?.set_canvas(id);
         this.startSimulation();
     }
 
@@ -117,6 +103,11 @@ export default class GrowthSimulationWASM implements ReactiveController {
     }
 
     private setup() {
+        if (!(this.simulation && this.config)) {
+            return;
+        }
+
+        this.simulation.update_settings(this.config.settings)
         this.simulation.setup();
     }
 

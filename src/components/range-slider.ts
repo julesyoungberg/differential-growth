@@ -40,7 +40,6 @@ export class RangeSlider extends LitElement {
     `;
 
     private onChange(event: InputEvent) {
-        console.log(event)
         const value = parseFloat((event.target as HTMLInputElement).value);
         this.dispatchEvent(
             new CustomEvent('change', { bubbles: true, composed: true, detail: { value } })
