@@ -58,7 +58,7 @@ export default class GrowthSimulation implements ReactiveController {
         for (const path of this.paths) {
             rbush.insertNodes(path.nodes);
         }
-    
+
         // update the simulation
         for (const path of this.paths) {
             path.update(rbush);

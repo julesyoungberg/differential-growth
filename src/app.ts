@@ -2,22 +2,25 @@ import { css, html, LitElement } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 
 import './components/button-element';
-import './components/settings-modal';
+import './components/config-modal';
 import './components/tool-bar';
 import GrowthSimulationWASM from './controllers/growth-simulation-wasm';
 
 import theme from './theme';
+import { defaultSettings } from './growth-simulation/config';
 
 const CANVAS_ID = 'simulation-canvas';
-const WIDTH = 1200;
-const HEIGHT = 800;
 
 @customElement('my-app')
 export class MyApp extends LitElement {
     @state()
     private settingsOpen: boolean = false;
 
-    private growthSimulation = new GrowthSimulationWASM(this, WIDTH, HEIGHT);
+    private growthSimulation = new GrowthSimulationWASM(
+        this,
+        defaultSettings.width,
+        defaultSettings.height
+    );
 
     static styles = css`
         :host {
@@ -78,16 +81,27 @@ export class MyApp extends LitElement {
         this.growthSimulation.stopSimulation();
     }
 
+    private updateInitialization(event: CustomEvent) {
+        console.log(event);
+        const { initialization } = event.detail;
+        this.growthSimulation.updateInitialization(initialization);
+        this.growthSimulation.stopSimulation();
+    }
+
     render() {
+        console.log("app.render()");
         return html`
-            ${(this.growthSimulation.config && this.settingsOpen) ? html`
-                <settings-modal
-                    ?open=${this.settingsOpen}
-                    @closed=${this.closeSettings}
-                    .settings=${this.growthSimulation.config.settings}
-                    @update-settings=${this.updateSettings}
-                ></settings-modal>
-            ` : ''}
+            ${this.growthSimulation.config && this.settingsOpen
+                ? html`
+                      <config-modal
+                          ?open=${this.settingsOpen}
+                          @closed=${this.closeSettings}
+                          .config=${this.growthSimulation.config}
+                          @update-settings=${this.updateSettings}
+                          @update-initialization=${this.updateInitialization}
+                      ></config-modal>
+                  `
+                : ''}
             <h1>Differential Growth</h1>
             <tool-bar
                 class="toolbar"
@@ -99,7 +113,11 @@ export class MyApp extends LitElement {
                 @stop=${this.stopSimulation}
                 @open-settings=${this.openSettings}
             ></tool-bar>
-            <canvas id=${CANVAS_ID} width="${WIDTH}ps" height="${HEIGHT}px"></canvas>
+            <canvas
+                id=${CANVAS_ID}
+                width="${defaultSettings.width}px"
+                height="${defaultSettings.height}px"
+            ></canvas>
         `;
     }
 }

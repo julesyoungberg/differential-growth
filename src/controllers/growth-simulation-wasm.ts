@@ -1,7 +1,7 @@
 import { ReactiveController, ReactiveControllerHost } from 'lit';
-import init, { Config, GrowthSimulation } from 'growth-simulation';
+import init, { GrowthSimulation } from 'growth-simulation';
 
-import { Settings } from '../growth-simulation/settings';
+import { Config, Initialization, Settings } from '../growth-simulation/config';
 
 interface Vec2 {
     x: number;
@@ -17,11 +17,9 @@ interface Path {
     nodes: Node[];
 }
 
-
 export default class GrowthSimulationWASM implements ReactiveController {
     private width: number;
     private height: number;
-    private ctx: CanvasRenderingContext2D | null = null;
     private running: boolean = true;
     private stopped: boolean = false;
     private simulation: GrowthSimulation | undefined;
@@ -57,8 +55,19 @@ export default class GrowthSimulationWASM implements ReactiveController {
             return;
         }
 
-        this.config.settings = { ...this.config.settings, ...newSettings } as any;
+        this.config.settings = { ...this.config.settings, ...newSettings };
         this.host.requestUpdate();
+    }
+
+    updateInitialization(newInit: Partial<Initialization>) {
+        console.log({ newInit });
+        if (!this.config) {
+            return;
+        }
+
+        this.config.initialization = { ...this.config.initialization, ...newInit };
+        this.host.requestUpdate();
+        console.log('updated');
     }
 
     async setCanvas(id: string) {
@@ -107,7 +116,7 @@ export default class GrowthSimulationWASM implements ReactiveController {
             return;
         }
 
-        this.simulation.update_settings(this.config.settings)
+        this.simulation.update_settings(this.config.settings);
         this.simulation.setup();
     }
 

@@ -37,7 +37,9 @@ export default class Path {
             }
 
             if (previousNode.distance(this.nodes[i]) > this.settings.max_edge_length) {
-                const newNode = new Node(Vector2.add(previousNode.position, nextNode.position).div(2));
+                const newNode = new Node(
+                    Vector2.add(previousNode.position, nextNode.position).div(2)
+                );
                 if (i === 0) {
                     this.nodes.splice(this.nodes.length, 0, newNode);
                 } else {
@@ -87,7 +89,7 @@ export default class Path {
             const node = this.nodes[i];
             const neighbors = rbush.searchNear(
                 node.position,
-                this.settings.separation_distance,
+                this.settings.separation_distance
                 // Math.max(this.settings.separation_distance, this.settings.attraction_distance)
             );
             const neighborNodes = neighbors.map((n) => n.node);
@@ -188,7 +190,10 @@ export default class Path {
 
             for (let j = 0; j < nodesPerEdge; j++) {
                 const distanceTraveled = j / nodesPerEdge;
-                const position = Vector2.add(node.position, Vector2.mul(edgeVector, distanceTraveled));
+                const position = Vector2.add(
+                    node.position,
+                    Vector2.mul(edgeVector, distanceTraveled)
+                );
                 nodes.push(new Node(position));
             }
         }

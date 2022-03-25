@@ -48,9 +48,7 @@ export class RangeSlider extends LitElement {
 
     render() {
         return html`
-            <label>
-                ${this.label}
-            </label>
+            <label> ${this.label} </label>
             <span>
                 <input
                     type="range"
