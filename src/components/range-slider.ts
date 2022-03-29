@@ -36,6 +36,28 @@ export class RangeSlider extends LitElement {
         .value {
             width: 48px;
             margin-left: 24px;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .slider {
+            height: 3px;
+            margin: 8px 0;
+            background: #7E6D57;
+            border: none;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            height: 4px;
+            background: #fcfcfc;
+            border: 2px solid #7E6D57;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            background: #7E6D57;
         }
     `;
 
@@ -51,12 +73,13 @@ export class RangeSlider extends LitElement {
             <label> ${this.label} </label>
             <span>
                 <input
+                    class="slider"
                     type="range"
                     min=${this.min}
                     max=${this.max}
                     step=${this.step}
                     value=${this.value}
-                    @change=${this.onChange}
+                    @input=${this.onChange}
                 />
                 <input
                     class="value"

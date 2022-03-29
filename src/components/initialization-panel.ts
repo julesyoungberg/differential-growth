@@ -11,7 +11,11 @@ export class InitializationPanel extends LitElement {
     @property({ type: Object })
     settings?: Initialization;
 
-    static styles = css``;
+    static styles = css`
+        .selector {
+            margin-bottom: 24px;
+        }
+    `;
 
     private updateSettings(newSettings: Partial<Initialization>) {
         console.log(newSettings);
@@ -71,7 +75,7 @@ export class InitializationPanel extends LitElement {
         }
 
         return html`
-            <select @change=${this.onInitTypeChange}>
+            <select @change=${this.onInitTypeChange} class="selector">
                 ${initializationConfig.init_type.options.map(
                     (t) => html` <option value=${t} ?selected=${t === initType}>${t}</option> `
                 )}

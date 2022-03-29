@@ -2,7 +2,7 @@ import { css, html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import theme from '../theme';
-import { Config, Settings, settingsConfig } from '../growth-simulation/config';
+import { Config, Initialization, RecordingConfig, Settings, settingsConfig } from '../growth-simulation/config';
 
 import './button-element';
 import './icons/close-icon';
@@ -28,7 +28,13 @@ export class ConfigModal extends LitElement {
     open = false;
 
     @property({ type: Object })
-    config?: Config;
+    settings?: Settings;
+
+    @property({ type: Object })
+    initialization?: Initialization;
+
+    @property({ type: Object })
+    recording?: RecordingConfig;
 
     @state()
     tab: SettingsTab = 'settings';
@@ -81,16 +87,16 @@ export class ConfigModal extends LitElement {
     }
 
     render() {
-        console.log('config', this.config);
+        console.log('config-modal', this.settings, this.initialization);
 
         let content = html``;
 
         if (this.tab === 'settings') {
-            content = html` <settings-panel .settings=${this.config?.settings}></settings-panel> `;
+            content = html` <settings-panel .settings=${this.settings}></settings-panel> `;
         } else if (this.tab === 'initialization') {
             content = html`
                 <initialization-panel
-                    .settings=${this.config?.initialization}
+                    .settings=${this.initialization}
                 ></initialization-panel>
             `;
         }

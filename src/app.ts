@@ -89,14 +89,16 @@ export class MyApp extends LitElement {
     }
 
     render() {
-        console.log("app.render()");
+        console.log("app.render()", this.growthSimulation.config);
         return html`
             ${this.growthSimulation.config && this.settingsOpen
                 ? html`
                       <config-modal
                           ?open=${this.settingsOpen}
                           @closed=${this.closeSettings}
-                          .config=${this.growthSimulation.config}
+                          .settings=${this.growthSimulation.config.settings}
+                          .initialization=${this.growthSimulation.config.initialization}
+                          .recording=${this.growthSimulation.config.recording}
                           @update-settings=${this.updateSettings}
                           @update-initialization=${this.updateInitialization}
                       ></config-modal>
