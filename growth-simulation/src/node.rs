@@ -11,6 +11,7 @@ pub struct Node {
     pub position: Vec2,
     pub velocity: Vec2,
     pub acceleration: Vec2,
+    pub fixed: bool,
 }
 
 impl Default for Node {
@@ -31,6 +32,7 @@ impl Node {
             position: Vec2::new(0.0, 0.0),
             velocity: Vec2::new(0.0, 0.0),
             acceleration: Vec2::new(0.0, 0.0),
+            fixed: false,
         }
     }
 
@@ -39,6 +41,7 @@ impl Node {
             position,
             velocity: Vec2::new(0.0, 0.0),
             acceleration: Vec2::new(0.0, 0.0),
+            fixed: false,
         }
     }
 
@@ -47,6 +50,7 @@ impl Node {
             position,
             velocity,
             acceleration: Vec2::new(0.0, 0.0),
+            fixed: false,
         }
     }
 

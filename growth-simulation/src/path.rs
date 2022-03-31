@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::console_log;
 
+use crate::bounds::*;
 use crate::config::{PolygonConfig, Settings};
 use crate::node::Node;
 use crate::vec2::{Point2, Vec2};
@@ -95,8 +96,12 @@ impl Path {
         }
     }
 
-    pub fn update(&mut self, settings: &Settings, rtree: &RTree<Point2>) {
+    pub fn update(&mut self, settings: &Settings, rtree: &RTree<Point2>, bounds: &Box<dyn Bounds>) {
         for index in 0..self.nodes.len() {
+            if self.nodes[index].fixed {
+                continue;
+            }
+
             let neighbors = self.get_neighbor_nodes(index);
             let node = &mut self.nodes[index];
 
@@ -109,9 +114,11 @@ impl Path {
             // node.attract(settings, rtree);
             node.avoid(settings, rtree);
 
-            /* @todo apply bounds */
-
             node.update(settings);
+
+            if !bounds.contains(node.position) {
+                node.fixed = true;
+            }
         }
 
         self.grow(settings);

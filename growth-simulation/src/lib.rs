@@ -1,3 +1,4 @@
+mod bounds;
 pub mod config;
 mod node;
 mod path;

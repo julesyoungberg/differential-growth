@@ -5,15 +5,16 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_test::console_log;
 
+use crate::bounds::*;
 use crate::config::{Config, InitializationConfig, InitializationType, RecordingConfig, Settings};
 use crate::path::Path;
 use crate::utils;
 use crate::vec2::Point2;
 
 #[wasm_bindgen]
-#[derive(Clone, Debug)]
 pub struct GrowthSimulation {
     ctx: Option<web_sys::CanvasRenderingContext2d>,
+    bounds: Box<dyn Bounds>,
     config: Config,
     paths: Vec<Path>,
 }
@@ -25,6 +26,15 @@ impl GrowthSimulation {
         utils::set_panic_hook();
         Self {
             ctx: None,
+            // bounds: Box::new(ViewBounds {
+            //     width: width as f64,
+            //     height: height as f64,
+            // }),
+            bounds: Box::new(CircleBounds::new(
+                width as f64 / 2.0,
+                height as f64 / 2.0,
+                200.0,
+            )),
             config: Config::new(width, height),
             paths: vec![],
         }
@@ -152,7 +162,7 @@ impl GrowthSimulation {
         let rtree = RTree::bulk_load(self.all_points());
 
         for path in self.paths.iter_mut() {
-            path.update(&self.config.settings, &rtree);
+            path.update(&self.config.settings, &rtree, &self.bounds);
         }
 
         self.draw();
