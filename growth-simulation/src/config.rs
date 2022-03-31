@@ -113,9 +113,42 @@ impl Default for InitializationConfig {
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct RectConfig {
+    width: f64,
+    height: f64,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub enum BoundsType {
+    None,
+    View,
+    Rect,
+    Circle,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct BoundsConfig {
+    pub bounds_type: BoundsType,
+    pub rect_config: Option<RectConfig>,
+}
+
+impl BoundsConfig {
+    pub fn new() -> Self {
+        Self {
+            bounds_type: BoundsType::View,
+            rect_config: None,
+        }
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Config {
     pub settings: Settings,
     pub initialization: InitializationConfig,
+    pub bounds: BoundsConfig,
     pub recording: RecordingConfig,
 }
 
@@ -125,6 +158,7 @@ impl Config {
         Self {
             settings: Settings::new(width, height),
             initialization: InitializationConfig::new(),
+            bounds: BoundsConfig::new(),
             recording: RecordingConfig::new(),
         }
     }

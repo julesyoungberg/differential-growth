@@ -2,7 +2,7 @@ import { css, html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import theme from '../theme';
-import { Config, Initialization, RecordingConfig, Settings, settingsConfig } from '../growth-simulation/config';
+import { Bounds, Initialization, RecordingConfig, Settings, settingsConfig } from '../growth-simulation/config';
 
 import './button-element';
 import './icons/close-icon';
@@ -12,7 +12,7 @@ import './range-slider';
 import './tab-button';
 import './settings-panel';
 
-const TABS = ['settings', 'initialization', 'recording'] as const;
+const TABS = ['settings', 'initialization', 'bounds', 'recording'] as const;
 
 type SettingsTab = typeof TABS[number];
 
@@ -32,6 +32,9 @@ export class ConfigModal extends LitElement {
 
     @property({ type: Object })
     initialization?: Initialization;
+
+    @property({ type: Object })
+    bounds?: Bounds;
 
     @property({ type: Object })
     recording?: RecordingConfig;
@@ -99,6 +102,8 @@ export class ConfigModal extends LitElement {
                     .settings=${this.initialization}
                 ></initialization-panel>
             `;
+        } else if (this.tab === 'bounds') {
+            content = html``;
         }
 
         return html`

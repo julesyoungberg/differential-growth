@@ -125,12 +125,12 @@ export const polygonConfig = {
     },
 };
 
-export const INITIALIZATION_TYPES = ['horizontal_line', 'vertical_line', 'polygon'] as const;
+export const INITIALIZATION_TYPES = ['HorizontalLine', 'VerticalLine', 'Polygon'] as const;
 
 export type InitializationType = typeof INITIALIZATION_TYPES[number];
 
 export const defaultInitialization = {
-    init_type: 'polygon',
+    init_type: 'Polygon',
     polygon_config: defaultPolygonConfig,
 };
 
@@ -147,9 +147,41 @@ export const initializationConfig = {
     },
 };
 
+export const defaultRectBoundsConfig = {
+    width: 300.0,
+    height: 300.0,
+};
+
+export type RectConfig = typeof defaultRectBoundsConfig;
+
+export const rectConfig = {
+    width: {
+        label: 'Width',
+        min: 10,
+        step: 1,
+    },
+    height: {
+        label: 'Height',
+        min: 10,
+        step: 1,
+    },
+};
+
+export const BOUNDS_TYPES = ['None', 'View', 'Rect', 'Circle'] as const;
+
+export type BoundsType = typeof BOUNDS_TYPES[number];
+
+export const defaultBounds = {
+    bounds_type: 'View',
+    rect_config: defaultRectBoundsConfig,
+};
+
+export type Bounds = typeof defaultBounds;
+
 export const defaultConfig = {
     settings: defaultSettings,
     initialization: defaultInitialization,
+    bounds: defaultBounds,
     recording: defaultRecordingConfig,
 };
 

@@ -82,9 +82,14 @@ export class MyApp extends LitElement {
     }
 
     private updateInitialization(event: CustomEvent) {
-        console.log(event);
         const { initialization } = event.detail;
         this.growthSimulation.updateInitialization(initialization);
+        this.growthSimulation.stopSimulation();
+    }
+
+    private updateBounds(event: CustomEvent) {
+        const { bounds } = event.detail;
+        this.growthSimulation.updateBounds(bounds);
         this.growthSimulation.stopSimulation();
     }
 
@@ -98,9 +103,11 @@ export class MyApp extends LitElement {
                           @closed=${this.closeSettings}
                           .settings=${this.growthSimulation.config.settings}
                           .initialization=${this.growthSimulation.config.initialization}
+                          .bounds=${this.growthSimulation.config.bounds}
                           .recording=${this.growthSimulation.config.recording}
                           @update-settings=${this.updateSettings}
                           @update-initialization=${this.updateInitialization}
+                          @update-bounds=${this.updateBounds}
                       ></config-modal>
                   `
                 : ''}

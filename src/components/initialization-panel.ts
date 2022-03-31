@@ -48,11 +48,11 @@ export class InitializationPanel extends LitElement {
 
     render() {
         console.log('initialization', this.settings);
-        const initType = this.settings?.init_type.toLowerCase();
+        const initType = this.settings?.init_type;
 
         let content = html``;
 
-        if (initType === 'polygon') {
+        if (initType === 'Polygon') {
             content = html`
                 ${Object.keys(initializationConfig.configs.polygon).map((k) => {
                     const key = k as keyof Initialization['polygon_config'];
