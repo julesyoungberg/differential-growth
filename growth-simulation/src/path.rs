@@ -28,25 +28,31 @@ impl Path {
         Self { cyclic, nodes }
     }
 
-    fn get_neighbor_nodes(&self, index: usize) -> NeighborNodes {
-        let mut neighbor_nodes = NeighborNodes {
-            prev_node: None,
-            next_node: None,
-        };
-
+    fn get_prev_node(&self, index: usize) -> Option<Node> {
         if index > 0 {
-            neighbor_nodes.prev_node = Some(self.nodes[index - 1]);
+            Some(self.nodes[index - 1])
         } else if self.cyclic {
-            neighbor_nodes.prev_node = Some(self.nodes[self.nodes.len() - 1]);
+            Some(self.nodes[self.nodes.len() - 1])
+        } else {
+            None
         }
+    }
 
+    fn get_next_node(&self, index: usize) -> Option<Node> {
         if index < self.nodes.len() - 1 {
-            neighbor_nodes.next_node = Some(self.nodes[index + 1]);
+            Some(self.nodes[index + 1])
         } else if self.cyclic {
-            neighbor_nodes.next_node = Some(self.nodes[0]);
+            Some(self.nodes[0])
+        } else {
+            None
         }
+    }
 
-        neighbor_nodes
+    fn get_neighbor_nodes(&self, index: usize) -> NeighborNodes {
+        NeighborNodes {
+            next_node: self.get_next_node(index),
+            prev_node: self.get_prev_node(index),
+        }
     }
 
     fn grow(&mut self, settings: &Settings) -> bool {
@@ -55,9 +61,8 @@ impl Path {
 
         for i in 0..n_nodes {
             let index = n_nodes - i - 1;
-            let neighbors = self.get_neighbor_nodes(index);
 
-            if let Some(prev_node) = neighbors.prev_node {
+            if let Some(prev_node) = self.get_prev_node(index) {
                 if prev_node.distance(&self.nodes[index]) > settings.max_edge_length {
                     let position = (self.nodes[index].position + prev_node.position) / 2.0;
                     let new_node = Node::new_with_position(position);
@@ -81,9 +86,7 @@ impl Path {
                 continue;
             }
 
-            let neighbors = self.get_neighbor_nodes(index);
-
-            if let Some(prev_node) = neighbors.prev_node {
+            if let Some(prev_node) = self.get_prev_node(index) {
                 if prev_node.distance(&self.nodes[index]) < settings.min_edge_length {
                     self.nodes.splice(index..index + 1, vec![]);
                 }
@@ -146,9 +149,7 @@ impl Path {
         ctx.set_stroke_style(&"#ffffff".into());
 
         for (index, node) in self.nodes.iter().enumerate() {
-            let neighbors = self.get_neighbor_nodes(index);
-
-            if let Some(prev_node) = neighbors.prev_node {
+            if let Some(prev_node) = self.get_prev_node(index) {
                 ctx.move_to(prev_node.position.x, prev_node.position.y);
                 ctx.line_to(node.position.x, node.position.y);
                 ctx.stroke();
