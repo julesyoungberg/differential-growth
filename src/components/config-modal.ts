@@ -2,7 +2,7 @@ import { css, html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import theme from '../theme';
-import { Bounds, Initialization, RecordingConfig, Settings, settingsConfig } from '../growth-simulation/config';
+import { Bounds, Initialization, RecordingConfig, Settings } from '../growth-simulation/config';
 
 import './button-element';
 import './bounds-panel';

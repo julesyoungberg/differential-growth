@@ -1,10 +1,38 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { Initialization, initializationConfig } from '../growth-simulation/config';
+import { Initialization } from '../growth-simulation/config';
 
 import './button-element';
 import './range-slider';
+
+export const INITIALIZATION_TYPES = ['HorizontalLine', 'VerticalLine', 'Polygon'] as const;
+
+export type InitializationType = typeof INITIALIZATION_TYPES[number];
+
+const polygonConfig = {
+    n_sides: {
+        label: 'Number of Sides',
+        min: 3,
+        max: 50,
+        step: 1,
+    },
+    radius: {
+        label: 'Radius',
+        min: 10.0,
+        max: 200.0,
+        step: 0.5,
+    },
+};
+
+const initializationConfig = {
+    init_type: {
+        label: 'Initialization Type',
+        inputType: 'select',
+        options: INITIALIZATION_TYPES,
+    },
+    polygon: polygonConfig,
+};
 
 @customElement('initialization-panel')
 export class InitializationPanel extends LitElement {

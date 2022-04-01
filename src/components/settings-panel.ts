@@ -1,10 +1,85 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { Settings, settingsConfig } from '../growth-simulation/config';
+import { Settings } from '../growth-simulation/config';
 
 import './button-element';
 import './range-slider';
+
+const settingsConfig = {
+    width: {
+        label: 'Width',
+        min: 100,
+        max: 1920,
+        step: 1,
+    },
+    height: {
+        label: 'Height',
+        min: 100,
+        max: 1080,
+        step: 1,
+    },
+    max_speed: {
+        label: 'Max Speed',
+        min: 0,
+        max: 1,
+        step: 0.01,
+    },
+    max_force: {
+        label: 'Max Force',
+        min: 0,
+        max: 1,
+        step: 0.01,
+    },
+    separation_distance: {
+        label: 'Separation Distance',
+        min: 0,
+        max: 100,
+        step: 1,
+    },
+    attraction_distance: {
+        label: 'Attraction Distance',
+        min: 0,
+        max: 100,
+        step: 1,
+    },
+    alignment_weight: {
+        label: 'Alignment Weight',
+        min: 0,
+        max: 2,
+        step: 0.01,
+    },
+    attraction_weight: {
+        label: 'Attraction Weight',
+        min: 0,
+        max: 2,
+        step: 0.01,
+    },
+    separtion_weight: {
+        label: 'Separation Weight',
+        min: 0,
+        max: 2,
+        step: 0.01,
+    },
+    max_edge_length: {
+        label: 'Max Edge Length',
+        min: 1,
+        max: 100,
+        step: 0.1,
+    },
+    min_edge_length: {
+        label: 'Min Edge Length',
+        min: 0,
+        max: 5,
+        step: 0.1,
+    },
+    injection_probability: {
+        label: 'Injection Probability',
+        min: 0,
+        max: 1,
+        step: 0.01,
+    },
+};
 
 @customElement('settings-panel')
 export class SettingsPanel extends LitElement {

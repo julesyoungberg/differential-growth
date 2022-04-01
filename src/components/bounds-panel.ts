@@ -1,9 +1,44 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { Bounds, boundsConfig } from '../growth-simulation/config';
+import { Bounds } from '../growth-simulation/config';
 
 import './range-slider';
+
+export const BOUNDS_TYPES = ['None', 'View', 'Rect', 'Circle'] as const;
+
+export type BoundsType = typeof BOUNDS_TYPES[number];
+
+export const rectConfig = {
+    width: {
+        label: 'Width',
+        min: 10,
+        step: 1,
+    },
+    height: {
+        label: 'Height',
+        min: 10,
+        step: 1,
+    },
+};
+
+export const circleConfig = {
+    radius: {
+        label: 'Radius',
+        min: 10,
+        step: 1,
+    },
+};
+
+const boundsConfig = {
+    bounds_type: {
+        label: 'Bounds Type',
+        inputType: 'select',
+        options: BOUNDS_TYPES,
+    },
+    rect: rectConfig,
+    circle: circleConfig,
+};
 
 @customElement('bounds-panel')
 export class BoundsPanel extends LitElement {

@@ -53,25 +53,20 @@ impl Path {
         let n_nodes = self.nodes.len();
         let mut new_nodes = false;
 
-        // console_log!("N NODES: {}", n_nodes);
-
         for i in 0..n_nodes {
             let index = n_nodes - i - 1;
             let neighbors = self.get_neighbor_nodes(index);
 
             if let Some(prev_node) = neighbors.prev_node {
-                if let Some(next_node) = neighbors.next_node {
-                    if next_node.distance(&self.nodes[index]) > settings.max_edge_length {
-                        // console_log!("NEW NODE AT INDEX: {}", index);
-                        let position = (prev_node.position + next_node.position) / 2.0;
-                        let new_node = Node::new_with_position(position);
-                        new_nodes = true;
+                if prev_node.distance(&self.nodes[index]) > settings.max_edge_length {
+                    let position = (self.nodes[index].position + prev_node.position) / 2.0;
+                    let new_node = Node::new_with_position(position);
+                    new_nodes = true;
 
-                        if index == 0 {
-                            self.nodes.push(new_node);
-                        } else {
-                            self.nodes.splice(index..index, vec![new_node]);
-                        }
+                    if index == 0 {
+                        self.nodes.push(new_node);
+                    } else {
+                        self.nodes.splice(index..index, vec![new_node]);
                     }
                 }
             }

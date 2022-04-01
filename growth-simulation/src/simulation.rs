@@ -113,10 +113,9 @@ impl GrowthSimulation {
 
         self.bounds = get_bounds(self.config);
 
-        /* @todo fix */
-        // for path in self.paths.iter_mut() {
-        //     path.preprocess(&self.config.settings);
-        // }
+        for path in self.paths.iter_mut() {
+            path.preprocess(&self.config.settings);
+        }
     }
 
     pub fn reset(&mut self) {
