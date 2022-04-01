@@ -142,9 +142,7 @@ export const initializationConfig = {
         inputType: 'select',
         options: INITIALIZATION_TYPES,
     },
-    configs: {
-        polygon: polygonConfig,
-    },
+    polygon: polygonConfig,
 };
 
 export const defaultRectBoundsConfig = {
@@ -167,6 +165,20 @@ export const rectConfig = {
     },
 };
 
+export const defaultCircleBoundsConfig = {
+    radius: 100.0,
+};
+
+export type CircleConfig = typeof defaultCircleBoundsConfig;
+
+export const circleConfig = {
+    radius: {
+        label: 'Radius',
+        min: 10,
+        step: 1,
+    },
+};
+
 export const BOUNDS_TYPES = ['None', 'View', 'Rect', 'Circle'] as const;
 
 export type BoundsType = typeof BOUNDS_TYPES[number];
@@ -174,9 +186,20 @@ export type BoundsType = typeof BOUNDS_TYPES[number];
 export const defaultBounds = {
     bounds_type: 'View',
     rect_config: defaultRectBoundsConfig,
+    circle_config: defaultCircleBoundsConfig,
 };
 
 export type Bounds = typeof defaultBounds;
+
+export const boundsConfig = {
+    bounds_type: {
+        label: 'Bounds Type',
+        inputType: 'select',
+        options: BOUNDS_TYPES,
+    },
+    rect: rectConfig,
+    circle: circleConfig,
+};
 
 export const defaultConfig = {
     settings: defaultSettings,

@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
+use crate::bounds::CircleBounds;
+
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Settings {
@@ -92,7 +94,7 @@ pub enum InitializationType {
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct InitializationConfig {
     pub init_type: InitializationType,
-    pub polygon_config: Option<PolygonConfig>,
+    pub polygon_config: PolygonConfig,
 }
 
 #[wasm_bindgen]
@@ -100,7 +102,7 @@ impl InitializationConfig {
     pub fn new() -> Self {
         Self {
             init_type: InitializationType::Polygon,
-            polygon_config: Some(PolygonConfig::new()),
+            polygon_config: PolygonConfig::new(),
         }
     }
 }
@@ -114,8 +116,14 @@ impl Default for InitializationConfig {
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct RectConfig {
-    width: f64,
-    height: f64,
+    pub width: f64,
+    pub height: f64,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct CircleConfig {
+    pub radius: f64,
 }
 
 #[wasm_bindgen]
@@ -131,14 +139,19 @@ pub enum BoundsType {
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BoundsConfig {
     pub bounds_type: BoundsType,
-    pub rect_config: Option<RectConfig>,
+    pub rect_config: RectConfig,
+    pub circle_config: CircleConfig,
 }
 
 impl BoundsConfig {
     pub fn new() -> Self {
         Self {
             bounds_type: BoundsType::View,
-            rect_config: None,
+            rect_config: RectConfig {
+                width: 100.0,
+                height: 100.0,
+            },
+            circle_config: CircleConfig { radius: 100.0 },
         }
     }
 }

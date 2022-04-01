@@ -1,3 +1,4 @@
+use crate::config::*;
 use crate::vec2::*;
 
 pub trait Bounds {
@@ -72,5 +73,26 @@ impl Bounds for CircleBounds {
     fn contains(&self, point: Vec2) -> bool {
         let diff = self.center - point;
         diff.length() < self.radius
+    }
+}
+
+pub fn get_bounds(config: Config) -> Box<dyn Bounds> {
+    match config.bounds.bounds_type {
+        BoundsType::None => Box::new(NoBounds {}),
+        BoundsType::View => Box::new(ViewBounds {
+            width: config.settings.width as f64,
+            height: config.settings.height as f64,
+        }),
+        BoundsType::Rect => Box::new(RectBounds::new(
+            config.settings.width as f64,
+            config.settings.height as f64,
+            config.bounds.rect_config.width,
+            config.bounds.rect_config.height,
+        )),
+        BoundsType::Circle => Box::new(CircleBounds::new(
+            config.settings.width as f64 / 2.0,
+            config.settings.height as f64 / 2.0,
+            config.bounds.circle_config.radius,
+        )),
     }
 }

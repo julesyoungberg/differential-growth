@@ -26,15 +26,7 @@ impl GrowthSimulation {
         utils::set_panic_hook();
         Self {
             ctx: None,
-            // bounds: Box::new(ViewBounds {
-            //     width: width as f64,
-            //     height: height as f64,
-            // }),
-            bounds: Box::new(CircleBounds::new(
-                width as f64 / 2.0,
-                height as f64 / 2.0,
-                200.0,
-            )),
+            bounds: Box::new(NoBounds {}),
             config: Config::new(width, height),
             paths: vec![],
         }
@@ -115,9 +107,11 @@ impl GrowthSimulation {
             }
             InitializationType::Polygon => self.paths.push(Path::polygon(
                 &self.config.settings,
-                self.config.initialization.polygon_config.unwrap(),
+                self.config.initialization.polygon_config,
             )),
         };
+
+        self.bounds = get_bounds(self.config);
 
         /* @todo fix */
         // for path in self.paths.iter_mut() {

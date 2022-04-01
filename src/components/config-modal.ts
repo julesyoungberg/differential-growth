@@ -5,6 +5,7 @@ import theme from '../theme';
 import { Bounds, Initialization, RecordingConfig, Settings, settingsConfig } from '../growth-simulation/config';
 
 import './button-element';
+import './bounds-panel';
 import './icons/close-icon';
 import './initialization-panel';
 import './modal-container';
@@ -90,7 +91,7 @@ export class ConfigModal extends LitElement {
     }
 
     render() {
-        console.log('config-modal', this.settings, this.initialization);
+        console.log('config-modal', this.tab);
 
         let content = html``;
 
@@ -103,7 +104,14 @@ export class ConfigModal extends LitElement {
                 ></initialization-panel>
             `;
         } else if (this.tab === 'bounds') {
-            content = html``;
+            console.log("Bounds panel");
+            content = html`
+                <bounds-panel
+                    .settings=${this.bounds}
+                    width=${this.settings?.width || 0}
+                    height=${this.settings?.height || 0}
+                ></bounds-panel>
+            `;
         }
 
         return html`

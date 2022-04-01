@@ -54,9 +54,9 @@ export class InitializationPanel extends LitElement {
 
         if (initType === 'Polygon') {
             content = html`
-                ${Object.keys(initializationConfig.configs.polygon).map((k) => {
+                ${Object.keys(initializationConfig.polygon).map((k) => {
                     const key = k as keyof Initialization['polygon_config'];
-                    const config = initializationConfig.configs.polygon[key];
+                    const config = initializationConfig.polygon[key];
                     return config
                         ? html`
                               <range-slider

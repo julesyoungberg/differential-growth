@@ -89,6 +89,7 @@ export class MyApp extends LitElement {
 
     private updateBounds(event: CustomEvent) {
         const { bounds } = event.detail;
+        console.log({ bounds });
         this.growthSimulation.updateBounds(bounds);
         this.growthSimulation.stopSimulation();
     }
