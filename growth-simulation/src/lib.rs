@@ -3,6 +3,7 @@ pub mod config;
 mod node;
 mod path;
 pub mod simulation;
+mod spatial_index;
 mod utils;
 mod vec2;
 

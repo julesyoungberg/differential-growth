@@ -3,7 +3,6 @@ use std::vec::Vec;
 use rstar::RTree;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::console_log;
 
 use crate::bounds::*;
 use crate::config::{PolygonConfig, Settings};
@@ -134,11 +133,9 @@ impl Path {
     }
 
     pub fn preprocess(&mut self, settings: &Settings) {
-        console_log!("PREPROCESS");
         let mut has_grown = true;
         while has_grown {
             has_grown = self.grow(settings);
-            console_log!("has_grown: {}", has_grown);
         }
     }
 
