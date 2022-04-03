@@ -8,6 +8,7 @@ use wasm_bindgen_test::console_log;
 use crate::bounds::*;
 use crate::config::{Config, InitializationConfig, InitializationType, RecordingConfig, Settings};
 use crate::path::Path;
+use crate::spatial_index::*;
 use crate::utils;
 use crate::vec2::Point2;
 
@@ -150,12 +151,16 @@ impl GrowthSimulation {
         ctx.restore();
     }
 
+    fn get_spatial_index(&self) -> Box<dyn SpatialIndex> {
+        Box::new(RTreeIndex::index(self.all_points()))
+    }
+
     pub fn update(&mut self) {
         /* @todo do this asynchronously between update calls */
-        let rtree = RTree::bulk_load(self.all_points());
+        let index = self.get_spatial_index();
 
         for path in self.paths.iter_mut() {
-            path.update(&self.config.settings, &rtree, &self.bounds);
+            path.update(&self.config.settings, &index, &self.bounds);
         }
 
         self.draw();

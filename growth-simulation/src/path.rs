@@ -7,8 +7,8 @@ use wasm_bindgen::prelude::*;
 use crate::bounds::*;
 use crate::config::{PolygonConfig, Settings};
 use crate::node::Node;
+use crate::spatial_index::*;
 use crate::vec2::{Point2, Vec2};
-
 #[wasm_bindgen]
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Path {
@@ -93,7 +93,12 @@ impl Path {
         }
     }
 
-    pub fn update(&mut self, settings: &Settings, rtree: &RTree<Point2>, bounds: &Box<dyn Bounds>) {
+    pub fn update(
+        &mut self,
+        settings: &Settings,
+        spatial_index: &Box<dyn SpatialIndex>,
+        bounds: &Box<dyn Bounds>,
+    ) {
         for index in 0..self.nodes.len() {
             if self.nodes[index].fixed {
                 continue;
@@ -109,7 +114,7 @@ impl Path {
             }
 
             // node.attract(settings, rtree);
-            node.avoid(settings, rtree);
+            node.avoid(settings, spatial_index);
 
             node.update(settings);
 

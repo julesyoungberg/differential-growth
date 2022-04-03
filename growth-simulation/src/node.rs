@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use crate::config::Settings;
+use crate::spatial_index::{self, SpatialIndex};
 use crate::vec2::{Point2, Vec2};
 
 #[wasm_bindgen]
@@ -72,7 +73,7 @@ impl Node {
     fn interact(
         &mut self,
         settings: &Settings,
-        rtree: &RTree<Point2>,
+        index: &Box<dyn SpatialIndex>,
         interaction_type: InteractionType,
     ) {
         let mut total_force = Vec2::new(0.0, 0.0);
@@ -83,7 +84,7 @@ impl Node {
             InteractionType::Avoid => settings.separation_distance,
         };
 
-        let others = self.get_neighbors(rtree, radius);
+        let others = index.get_neighbors(&self.position, radius);
 
         for o in others {
             let other_pos = Vec2::from_point2(o);
@@ -120,12 +121,12 @@ impl Node {
         }
     }
 
-    pub fn attract(&mut self, settings: &Settings, rtree: &RTree<Point2>) {
-        self.interact(settings, rtree, InteractionType::Attract);
+    pub fn attract(&mut self, settings: &Settings, index: &Box<dyn SpatialIndex>) {
+        self.interact(settings, index, InteractionType::Attract);
     }
 
-    pub fn avoid(&mut self, settings: &Settings, rtree: &RTree<Point2>) {
-        self.interact(settings, rtree, InteractionType::Avoid);
+    pub fn avoid(&mut self, settings: &Settings, index: &Box<dyn SpatialIndex>) {
+        self.interact(settings, index, InteractionType::Avoid);
     }
 
     pub fn align(&mut self, prev: &Node, next: &Node, settings: &Settings) {
@@ -137,16 +138,6 @@ impl Node {
         steer.limit(settings.max_force);
         steer *= settings.alignment_weight;
         self.add_force(steer);
-    }
-
-    fn get_neighbors<'a>(&self, rtree: &'a RTree<Point2>, radius: f64) -> Vec<&'a Point2> {
-        let bottom_corner = self.position - radius;
-        let top_corner = self.position + radius;
-        let radius_square = AABB::from_corners(bottom_corner.as_point2(), top_corner.as_point2());
-        rtree
-            .locate_in_envelope(&radius_square)
-            .into_iter()
-            .collect()
     }
 }
 
