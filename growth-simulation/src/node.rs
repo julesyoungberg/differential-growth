@@ -1,10 +1,9 @@
-use rstar::{RTree, AABB};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use crate::config::Settings;
-use crate::spatial_index::{self, SpatialIndex};
-use crate::vec2::{Point2, Vec2};
+use crate::spatial_index::SpatialIndex;
+use crate::vec2::Vec2;
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Deserialize, Serialize)]
@@ -145,7 +144,8 @@ impl Node {
 mod tests {
     use crate::config::Settings;
     use crate::node::Node;
-    use crate::vec2::Vec2;
+    use crate::spatial_index::*;
+    use crate::vec2::{Point2, Vec2};
 
     #[test]
     fn node_new() {
@@ -202,11 +202,49 @@ mod tests {
         node.add_force(Vec2::new(2.0, -1.0));
         let settings = Settings::new(100, 100);
         node.update(&settings);
-        assert_eq!(node.position.x, 2.0);
+        assert_eq!(node.position.x, -1.0);
         assert_eq!(node.position.y, 2.0);
-        assert_eq!(node.velocity.x, 4.0);
+        assert_eq!(node.velocity.x, 1.0);
         assert_eq!(node.velocity.y, 0.0);
         assert_eq!(node.acceleration.x, 0.0);
         assert_eq!(node.acceleration.y, 0.0);
+    }
+
+    #[test]
+    fn node_align() {
+        let mut node = Node::new_with_position(Vec2::new(1.0, 1.5));
+        let prev = Node::new_with_position(Vec2::new(-1.0, 1.0));
+        let next = Node::new_with_position(Vec2::new(1.5, -0.5));
+        let settings = Settings::new(1920, 1080);
+        node.align(&prev, &next, &settings);
+        // @todo update
+        assert_eq!(node.acceleration.x, -0.4630461798847739);
+        assert_eq!(node.acceleration.y, -0.7717436331412899);
+    }
+
+    #[test]
+    fn node_attract() {
+        let mut node = Node::new_with_position(Vec2::new(0.0, 0.0));
+        let points: Vec<Point2> = vec![[1.0, 0.0], [0.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
+        let settings = Settings::new(100, 100);
+        let mut index: Box<dyn SpatialIndex> = Box::new(NoIndex::new());
+        index.index(points);
+        node.attract(&settings, &index);
+        // @todo update
+        assert_eq!(node.acceleration.x, 0.42426406871192857);
+        assert_eq!(node.acceleration.y, 0.42426406871192857);
+    }
+
+    #[test]
+    fn node_avoid() {
+        let mut node = Node::new_with_position(Vec2::new(0.0, 0.0));
+        let points: Vec<Point2> = vec![[1.0, 0.0], [0.0, 0.0], [0.0, 1.0], [1.0, 1.0]];
+        let settings = Settings::new(100, 100);
+        let mut index: Box<dyn SpatialIndex> = Box::new(NoIndex::new());
+        index.index(points);
+        node.avoid(&settings, &index);
+        // @todo update
+        assert_eq!(node.acceleration.x, -0.42850670939904784);
+        assert_eq!(node.acceleration.y, -0.42850670939904784);
     }
 }
