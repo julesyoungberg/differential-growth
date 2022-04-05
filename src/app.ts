@@ -1,5 +1,5 @@
 import { css, html, LitElement } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, query, state } from 'lit/decorators.js';
 
 import './components/button-element';
 import './components/config-modal';
@@ -13,6 +13,9 @@ const CANVAS_ID = 'simulation-canvas';
 
 @customElement('my-app')
 export class MyApp extends LitElement {
+    @query(`#${CANVAS_ID}`)
+    private canvas?: HTMLCanvasElement;
+
     @state()
     private settingsOpen: boolean = false;
 
@@ -79,6 +82,14 @@ export class MyApp extends LitElement {
         const { settings } = event.detail;
         this.growthSimulation.updateSettings(settings);
         this.growthSimulation.stopSimulation();
+
+        if (settings.width && this.canvas) {
+            this.canvas.width = settings.width;
+        }
+
+        if (settings.height && this.canvas) {
+            this.canvas.height = settings.height;
+        }
     }
 
     private updateInitialization(event: CustomEvent) {

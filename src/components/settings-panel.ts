@@ -110,8 +110,16 @@ export class SettingsPanel extends LitElement {
         const newSettings = { ...this.settings };
 
         Object.keys(newSettings).forEach((k) => {
+            if (['width', 'height'].includes(k)) {
+                return;
+            }
+
             const key = k as keyof Settings;
             const config = settingsConfig[key];
+            if (!config) {
+                return;
+            }
+
             const range = config.max - config.min;
             newSettings[key] = Math.random() * range + config.min;
         });
