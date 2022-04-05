@@ -1,13 +1,13 @@
 use std::vec::Vec;
 
-use rstar::RTree;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_test::console_log;
 
 use crate::bounds::*;
-use crate::config::{Config, InitializationConfig, InitializationType, RecordingConfig, Settings};
+use crate::config::*;
 use crate::path::Path;
+use crate::spatial_index;
 use crate::spatial_index::*;
 use crate::utils;
 use crate::vec2::Point2;
@@ -152,7 +152,7 @@ impl GrowthSimulation {
     }
 
     fn get_spatial_index(&self) -> Box<dyn SpatialIndex> {
-        Box::new(RTreeIndex::index(self.all_points()))
+        spatial_index::index_points(self.all_points(), SpatialIndexType::None)
     }
 
     pub fn update(&mut self) {
