@@ -152,7 +152,7 @@ impl GrowthSimulation {
     }
 
     fn get_spatial_index(&self) -> Box<dyn SpatialIndex> {
-        spatial_index::index_points(self.all_points(), SpatialIndexType::None)
+        spatial_index::index_points(self.all_points(), SpatialIndexType::RTree)
     }
 
     pub fn update(&mut self) {
