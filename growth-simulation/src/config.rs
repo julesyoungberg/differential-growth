@@ -29,7 +29,7 @@ impl Settings {
             separation_distance: 50.0,
             attraction_distance: 70.0,
             alignment_weight: 1.5,
-            attraction_weight: 1.0,
+            attraction_weight: 0.0,
             separation_weight: 1.01,
             max_edge_length: 5.0,
             min_edge_length: 1.0,

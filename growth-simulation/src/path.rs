@@ -1,6 +1,6 @@
 use std::vec::Vec;
 
-use rand::prelude::*;
+use js_sys::Math::random;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
@@ -94,13 +94,11 @@ impl Path {
     }
 
     fn inject_random_nodes(&mut self, settings: &Settings) {
-        let mut rng = rand::thread_rng();
-        let x: f64 = rng.gen();
-        if x > settings.injection_probability {
+        if random() > settings.injection_probability {
             return;
         }
 
-        let index = rng.gen_range(1..self.nodes.len() - 1);
+        let index = (random() * (self.nodes.len() as f64 - 2.0)) as usize + 1;
 
         if let Some(prev_node) = self.get_prev_node(index) {
             let new_node =
@@ -134,7 +132,10 @@ impl Path {
                 }
             }
 
-            // node.attract(settings, rtree);
+            if settings.attraction_weight > 0.0 {
+                node.attract(settings, spatial_index);
+            }
+
             node.avoid(settings, spatial_index);
 
             node.update(settings);
