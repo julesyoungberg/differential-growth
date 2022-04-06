@@ -44,13 +44,13 @@ export class ToolBar extends LitElement {
 
         return html`
             <div>
-                <button-element @click=${this.handlePlayPauseClick}
+                <button-element class="square" @click=${this.handlePlayPauseClick}
                     >${playPauseIcon}</button-element
                 >
-                <button-element @click=${this.handleStopClick}
+                <button-element class="square" @click=${this.handleStopClick}
                     ><stop-icon></stop-icon
                 ></button-element>
-                <button-element @click=${this.handleSettingsClick}>
+                <button-element class="square" @click=${this.handleSettingsClick}>
                     <settings-icon></settings-icon>
                 </button-element>
             </div>

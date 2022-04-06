@@ -19,6 +19,16 @@ export class ButtonElement extends LitElement {
             font-size: 18px;
             padding: var(--button-padding, 4px);
         }
+
+        :host(.square) button {
+            width: 40px;
+            height: 40px;
+            padding-top: 5px;
+        }
+
+        button:hover {
+            background-color: ${theme.colors.greyDarker};
+        }
     `;
 
     render() {
