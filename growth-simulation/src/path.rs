@@ -1,5 +1,6 @@
 use std::vec::Vec;
 
+use rand::prelude::*;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
@@ -92,6 +93,27 @@ impl Path {
         }
     }
 
+    fn inject_random_nodes(&mut self, settings: &Settings) {
+        let mut rng = rand::thread_rng();
+        let x: f64 = rng.gen();
+        if x > settings.injection_probability {
+            return;
+        }
+
+        let index = rng.gen_range(1..self.nodes.len() - 1);
+
+        if let Some(prev_node) = self.get_prev_node(index) {
+            let new_node =
+                Node::new_with_position((prev_node.position + self.nodes[index].position) / 2.0);
+
+            if index == 0 {
+                self.nodes.push(new_node);
+            } else {
+                self.nodes.splice(index..index, vec![new_node]);
+            }
+        }
+    }
+
     pub fn update(
         &mut self,
         settings: &Settings,
@@ -124,8 +146,7 @@ impl Path {
 
         self.grow(settings);
         self.prune(settings);
-
-        /* @todo inject random nodes */
+        self.inject_random_nodes(settings);
     }
 
     pub fn node_positions(&self) -> Vec<Vec2> {
