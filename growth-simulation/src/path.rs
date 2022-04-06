@@ -203,3 +203,154 @@ impl Path {
         Self::new(nodes, true)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::path::*;
+
+    #[test]
+    fn path_get_prev_node() {
+        let nodes = vec![
+            Node::new_with_position(Vec2::new(0.0, 0.0)),
+            Node::new_with_position(Vec2::new(1.0, 1.0)),
+            Node::new_with_position(Vec2::new(2.0, 2.0)),
+        ];
+
+        let basic_path = Path::new(nodes.clone(), false);
+        let cyclic_path = Path::new(nodes.clone(), true);
+
+        assert_eq!(basic_path.get_prev_node(0), None);
+        assert_eq!(cyclic_path.get_prev_node(0), Some(nodes[2]));
+
+        assert_eq!(basic_path.get_prev_node(1), Some(nodes[0]));
+        assert_eq!(cyclic_path.get_prev_node(1), Some(nodes[0]));
+
+        assert_eq!(basic_path.get_prev_node(2), Some(nodes[1]));
+        assert_eq!(cyclic_path.get_prev_node(2), Some(nodes[1]));
+    }
+
+    #[test]
+    fn path_get_next_node() {
+        let nodes = vec![
+            Node::new_with_position(Vec2::new(0.0, 0.0)),
+            Node::new_with_position(Vec2::new(1.0, 1.0)),
+            Node::new_with_position(Vec2::new(2.0, 2.0)),
+        ];
+
+        let basic_path = Path::new(nodes.clone(), false);
+        let cyclic_path = Path::new(nodes.clone(), true);
+
+        assert_eq!(basic_path.get_next_node(0), Some(nodes[1]));
+        assert_eq!(cyclic_path.get_next_node(0), Some(nodes[1]));
+
+        assert_eq!(basic_path.get_next_node(1), Some(nodes[2]));
+        assert_eq!(cyclic_path.get_next_node(1), Some(nodes[2]));
+
+        assert_eq!(basic_path.get_next_node(2), None);
+        assert_eq!(cyclic_path.get_next_node(2), Some(nodes[0]));
+    }
+
+    #[test]
+    fn path_get_neighbor_nodes() {
+        let nodes = vec![
+            Node::new_with_position(Vec2::new(0.0, 0.0)),
+            Node::new_with_position(Vec2::new(1.0, 1.0)),
+            Node::new_with_position(Vec2::new(2.0, 2.0)),
+        ];
+
+        let path = Path::new(nodes.clone(), false);
+        let neighbors = path.get_neighbor_nodes(1);
+
+        assert_eq!(neighbors.prev_node, Some(nodes[0]));
+        assert_eq!(neighbors.next_node, Some(nodes[2]));
+    }
+
+    #[test]
+    fn path_grow() {
+        let mut settings = Settings::new(100, 100);
+        settings.max_edge_length = 0.5;
+
+        let nodes = vec![
+            Node::new_with_position(Vec2::new(0.0, 0.0)),
+            Node::new_with_position(Vec2::new(1.0, 0.0)),
+            Node::new_with_position(Vec2::new(1.0, 0.4)),
+        ];
+
+        let mut basic_path = Path::new(nodes.clone(), false);
+        let mut cyclic_path = Path::new(nodes, true);
+
+        assert_eq!(basic_path.grow(&settings), true);
+        assert_eq!(cyclic_path.grow(&settings), true);
+
+        let basic_points = basic_path.node_positions();
+        let cyclic_points = cyclic_path.node_positions();
+
+        assert_eq!(basic_points.len(), 4);
+        assert_eq!(cyclic_points.len(), 5);
+
+        assert_eq!(basic_points[0], Vec2::new(0.0, 0.0));
+        assert_eq!(cyclic_points[0], Vec2::new(0.0, 0.0));
+
+        assert_eq!(basic_points[1], Vec2::new(0.5, 0.0));
+        assert_eq!(cyclic_points[1], Vec2::new(0.5, 0.0));
+
+        assert_eq!(basic_points[2], Vec2::new(1.0, 0.0));
+        assert_eq!(cyclic_points[2], Vec2::new(1.0, 0.0));
+
+        assert_eq!(basic_points[3], Vec2::new(1.0, 0.4));
+        assert_eq!(cyclic_points[3], Vec2::new(1.0, 0.4));
+
+        assert_eq!(cyclic_points[4], Vec2::new(0.5, 0.2));
+    }
+
+    #[test]
+    fn path_grow_no_growth() {
+        let mut settings = Settings::new(100, 100);
+        settings.max_edge_length = 1.0;
+
+        let nodes = vec![
+            Node::new_with_position(Vec2::new(0.0, 0.0)),
+            Node::new_with_position(Vec2::new(1.0, 0.0)),
+            Node::new_with_position(Vec2::new(0.5, 0.5)),
+        ];
+
+        let mut path = Path::new(nodes, true);
+
+        assert_eq!(path.grow(&settings), false);
+
+        assert_eq!(path.node_positions().len(), 3);
+    }
+
+    #[test]
+    fn path_prune() {
+        let mut settings = Settings::new(100, 100);
+        settings.min_edge_length = 1.0;
+
+        let nodes = vec![
+            Node::new_with_position(Vec2::new(0.0, 0.0)),
+            Node::new_with_position(Vec2::new(0.5, 0.5)),
+            Node::new_with_position(Vec2::new(1.0, 1.0)),
+            Node::new_with_position(Vec2::new(0.0, -0.5)),
+        ];
+
+        let mut basic_path = Path::new(nodes.clone(), false);
+        let mut cyclic_path = Path::new(nodes, true);
+
+        basic_path.prune(&settings);
+        cyclic_path.prune(&settings);
+
+        let basic_points = basic_path.node_positions();
+        let cyclic_points = cyclic_path.node_positions();
+
+        assert_eq!(basic_points.len(), 3);
+        assert_eq!(cyclic_points.len(), 2);
+
+        assert_eq!(basic_points[0], Vec2::new(0.0, 0.0));
+        assert_eq!(cyclic_points[0], Vec2::new(0.5, 0.5));
+
+        assert_eq!(basic_points[1], Vec2::new(1.0, 1.0));
+        assert_eq!(cyclic_points[1], Vec2::new(0.0, -0.5));
+
+        assert_eq!(basic_points[2], Vec2::new(0.0, -0.5));
+    }
+}

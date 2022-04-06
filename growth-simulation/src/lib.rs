@@ -17,8 +17,3 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 // extern "C" {
 //     fn alert(s: &str);
 // }
-
-// #[wasm_bindgen]
-// pub fn greet() {
-//     alert("Hello, growth-simulation!");
-// }
