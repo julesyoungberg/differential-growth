@@ -33,11 +33,13 @@ export const circleConfig = {
 const boundsConfig = {
     bounds_type: {
         label: 'Bounds Type',
-        inputType: 'select',
         options: BOUNDS_TYPES,
     },
-    rect: rectConfig,
+    draw: {
+        label: 'Draw',
+    },
     circle: circleConfig,
+    rect: rectConfig,
 };
 
 @customElement('bounds-panel')
@@ -54,6 +56,11 @@ export class BoundsPanel extends LitElement {
     static styles = css`
         .selector {
             margin-bottom: 24px;
+        }
+
+        .draw {
+            display: block;
+            margin-bottom: 16px;
         }
     `;
 
@@ -88,6 +95,12 @@ export class BoundsPanel extends LitElement {
                 ...this.settings?.circle_config,
                 [key]: event.detail.value,
             } as Bounds['circle_config'],
+        });
+    }
+
+    private toggleDrawBounds(event: Event) {
+        this.updateSettings({
+            draw: !this.settings?.draw,
         });
     }
 
@@ -131,6 +144,14 @@ export class BoundsPanel extends LitElement {
         }
 
         return html`
+            <label class="draw">
+                <input
+                    type="checkbox"
+                    ?checked=${this.settings?.draw || false}
+                    @change=${this.toggleDrawBounds}
+                />
+                Draw
+            </label>
             <select @change=${this.onBoundsTypeChange} class="selector">
                 ${boundsConfig.bounds_type.options.map(
                     (t) => html` <option value=${t} ?selected=${t === boundsType}>${t}</option> `

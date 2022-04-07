@@ -57,8 +57,9 @@ export type CircleConfig = typeof defaultCircleBoundsConfig;
 
 export const defaultBounds = {
     bounds_type: 'View',
-    rect_config: defaultRectBoundsConfig,
+    draw: false,
     circle_config: defaultCircleBoundsConfig,
+    rect_config: defaultRectBoundsConfig,
 };
 
 export type Bounds = typeof defaultBounds;
