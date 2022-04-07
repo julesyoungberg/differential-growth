@@ -115,8 +115,8 @@ impl Path {
     pub fn update(
         &mut self,
         settings: &Settings,
-        spatial_index: &Box<dyn SpatialIndex>,
-        bounds: &Box<dyn Bounds>,
+        spatial_index: &dyn SpatialIndex,
+        bounds: &dyn Bounds,
     ) {
         for index in 0..self.nodes.len() {
             if self.nodes[index].fixed {

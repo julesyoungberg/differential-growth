@@ -154,6 +154,12 @@ impl BoundsConfig {
     }
 }
 
+impl Default for BoundsConfig {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Config {

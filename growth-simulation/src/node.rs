@@ -72,7 +72,7 @@ impl Node {
     fn interact(
         &mut self,
         settings: &Settings,
-        index: &Box<dyn SpatialIndex>,
+        index: &dyn SpatialIndex,
         interaction_type: InteractionType,
     ) {
         let mut total_force = Vec2::new(0.0, 0.0);
@@ -120,11 +120,11 @@ impl Node {
         }
     }
 
-    pub fn attract(&mut self, settings: &Settings, index: &Box<dyn SpatialIndex>) {
+    pub fn attract(&mut self, settings: &Settings, index: &dyn SpatialIndex) {
         self.interact(settings, index, InteractionType::Attract);
     }
 
-    pub fn avoid(&mut self, settings: &Settings, index: &Box<dyn SpatialIndex>) {
+    pub fn avoid(&mut self, settings: &Settings, index: &dyn SpatialIndex) {
         self.interact(settings, index, InteractionType::Avoid);
     }
 

@@ -160,7 +160,7 @@ impl GrowthSimulation {
         let index = self.get_spatial_index();
 
         for path in self.paths.iter_mut() {
-            path.update(&self.config.settings, &index, &self.bounds);
+            path.update(&self.config.settings, index.as_ref(), self.bounds.as_ref());
         }
 
         self.draw();
