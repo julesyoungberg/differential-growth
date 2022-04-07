@@ -1,10 +1,13 @@
 use crate::config::*;
+use crate::draw::draw_path;
 use crate::vec2::*;
 
 pub trait Bounds {
     fn contains(&self, _point: Vec2) -> bool {
         false
     }
+
+    fn draw(&self, _ctx: &web_sys::CanvasRenderingContext2d) {}
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -24,12 +27,13 @@ impl Bounds for ViewBounds {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct RectBounds {
     min_x: f64,
     min_y: f64,
     max_x: f64,
     max_y: f64,
+    points: Vec<Vec2>,
 }
 
 impl RectBounds {
@@ -44,6 +48,12 @@ impl RectBounds {
             min_y: bottom_corner.y,
             max_x: top_corner.x,
             max_y: top_corner.y,
+            points: vec![
+                bottom_corner.clone(),
+                Vec2::new(bottom_corner.x, top_corner.y),
+                top_corner.clone(),
+                Vec2::new(top_corner.x, bottom_corner.y),
+            ],
         }
     }
 }
@@ -51,6 +61,10 @@ impl RectBounds {
 impl Bounds for RectBounds {
     fn contains(&self, point: Vec2) -> bool {
         point.x > self.min_x && point.x < self.max_x && point.y > self.min_y && point.y < self.max_y
+    }
+
+    fn draw(&self, ctx: &web_sys::CanvasRenderingContext2d) {
+        draw_path(ctx, &self.points, true);
     }
 }
 
@@ -74,6 +88,8 @@ impl Bounds for CircleBounds {
         let diff = self.center - point;
         diff.length() < self.radius
     }
+
+    fn draw(&self, ctx: &web_sys::CanvasRenderingContext2d) {}
 }
 
 pub fn get_bounds(config: Config) -> Box<dyn Bounds> {

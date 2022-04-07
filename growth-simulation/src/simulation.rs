@@ -148,6 +148,8 @@ impl GrowthSimulation {
             path.draw(ctx);
         }
 
+        self.bounds.draw(ctx);
+
         ctx.restore();
     }
 

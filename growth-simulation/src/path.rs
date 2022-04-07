@@ -6,9 +6,11 @@ use wasm_bindgen::prelude::*;
 
 use crate::bounds::*;
 use crate::config::{PolygonConfig, Settings};
+use crate::draw::draw_path;
 use crate::node::Node;
 use crate::spatial_index::*;
 use crate::vec2::{Point2, Vec2};
+
 #[wasm_bindgen]
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Path {
@@ -166,20 +168,8 @@ impl Path {
     }
 
     pub fn draw(&self, ctx: &web_sys::CanvasRenderingContext2d) {
-        ctx.save();
-        ctx.begin_path();
-        ctx.set_line_width(1.0);
-        ctx.set_stroke_style(&"#ffffff".into());
-
-        for (index, node) in self.nodes.iter().enumerate() {
-            if let Some(prev_node) = self.get_prev_node(index) {
-                ctx.move_to(prev_node.position.x, prev_node.position.y);
-                ctx.line_to(node.position.x, node.position.y);
-                ctx.stroke();
-            }
-        }
-
-        ctx.restore();
+        let points: Vec<Vec2> = self.nodes.iter().map(|n| n.position).collect();
+        draw_path(ctx, &points, self.cyclic);
     }
 
     pub fn horizontal(settings: &Settings) -> Self {
