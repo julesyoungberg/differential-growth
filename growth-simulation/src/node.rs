@@ -229,7 +229,7 @@ mod tests {
         let settings = Settings::new(100, 100);
         let mut index: Box<dyn SpatialIndex> = Box::new(NoIndex::new());
         index.index(points);
-        node.attract(&settings, &index);
+        node.attract(&settings, index.as_ref());
         // @todo update
         assert_eq!(node.acceleration.x, 0.42426406871192857);
         assert_eq!(node.acceleration.y, 0.42426406871192857);
@@ -242,7 +242,7 @@ mod tests {
         let settings = Settings::new(100, 100);
         let mut index: Box<dyn SpatialIndex> = Box::new(NoIndex::new());
         index.index(points);
-        node.avoid(&settings, &index);
+        node.avoid(&settings, index.as_ref());
         // @todo update
         assert_eq!(node.acceleration.x, -0.42850670939904784);
         assert_eq!(node.acceleration.y, -0.42850670939904784);
