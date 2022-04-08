@@ -1,6 +1,7 @@
 mod bounds;
 pub mod config;
 mod draw;
+mod geometry;
 mod node;
 mod path;
 pub mod simulation;

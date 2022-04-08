@@ -1,5 +1,6 @@
 use crate::config::*;
 use crate::draw::draw_path;
+use crate::geometry::*;
 use crate::vec2::*;
 
 pub trait Bounds {
@@ -64,20 +65,30 @@ impl Bounds for RectBounds {
     }
 
     fn draw(&self, ctx: &web_sys::CanvasRenderingContext2d) {
-        draw_path(ctx, &self.points, true);
+        draw_path(ctx, &self.points, true, "#888888");
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct CircleBounds {
     center: Vec2,
+    points: Vec<Vec2>,
     radius: f64,
 }
 
 impl CircleBounds {
-    pub fn new(center_x: f64, center_y: f64, radius: f64) -> Self {
+    pub fn new(center_x: f64, center_y: f64, radius: f64, settings: &Settings) -> Self {
+        let center = Vec2::new(center_x, center_y);
+
         Self {
-            center: Vec2::new(center_x, center_y),
+            center,
+            points: polygon(
+                settings,
+                PolygonConfig {
+                    n_sides: 40,
+                    radius: radius,
+                },
+            ),
             radius,
         }
     }
@@ -89,7 +100,9 @@ impl Bounds for CircleBounds {
         diff.length() < self.radius
     }
 
-    fn draw(&self, ctx: &web_sys::CanvasRenderingContext2d) {}
+    fn draw(&self, ctx: &web_sys::CanvasRenderingContext2d) {
+        draw_path(ctx, &self.points, true, "#888888");
+    }
 }
 
 pub fn get_bounds(config: Config) -> Box<dyn Bounds> {
@@ -109,6 +122,7 @@ pub fn get_bounds(config: Config) -> Box<dyn Bounds> {
             config.settings.width as f64 / 2.0,
             config.settings.height as f64 / 2.0,
             config.bounds.circle_config.radius,
+            &config.settings,
         )),
     }
 }

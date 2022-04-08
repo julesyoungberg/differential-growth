@@ -137,8 +137,8 @@ pub enum BoundsType {
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BoundsConfig {
     pub bounds_type: BoundsType,
-    pub circle_config: CircleConfig,
     pub draw: bool,
+    pub circle_config: CircleConfig,
     pub rect_config: RectConfig,
 }
 
@@ -146,8 +146,8 @@ impl BoundsConfig {
     pub fn new() -> Self {
         Self {
             bounds_type: BoundsType::View,
-            circle_config: CircleConfig { radius: 100.0 },
             draw: false,
+            circle_config: CircleConfig { radius: 100.0 },
             rect_config: RectConfig {
                 width: 100.0,
                 height: 100.0,

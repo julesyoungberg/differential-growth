@@ -1,10 +1,15 @@
 use crate::vec2::*;
 
-pub fn draw_path(ctx: &web_sys::CanvasRenderingContext2d, points: &[Vec2], cyclic: bool) {
+pub fn draw_path(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    points: &[Vec2],
+    cyclic: bool,
+    color: &str,
+) {
     ctx.save();
     ctx.begin_path();
     ctx.set_line_width(1.0);
-    ctx.set_stroke_style(&"#ffffff".into());
+    ctx.set_stroke_style(&color.into());
 
     for (index, point) in points.iter().enumerate() {
         let mut prev_index = index;

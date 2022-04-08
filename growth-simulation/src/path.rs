@@ -7,6 +7,7 @@ use wasm_bindgen::prelude::*;
 use crate::bounds::*;
 use crate::config::{PolygonConfig, Settings};
 use crate::draw::draw_path;
+use crate::geometry::*;
 use crate::node::Node;
 use crate::spatial_index::*;
 use crate::vec2::{Point2, Vec2};
@@ -169,7 +170,7 @@ impl Path {
 
     pub fn draw(&self, ctx: &web_sys::CanvasRenderingContext2d) {
         let points: Vec<Vec2> = self.nodes.iter().map(|n| n.position).collect();
-        draw_path(ctx, &points, self.cyclic);
+        draw_path(ctx, &points, self.cyclic, "#ffffff");
     }
 
     pub fn horizontal(settings: &Settings) -> Self {
@@ -201,17 +202,10 @@ impl Path {
     }
 
     pub fn polygon(settings: &Settings, config: PolygonConfig) -> Self {
-        let mut nodes = vec![];
-        let center = Vec2::new(settings.width as f64 / 2.0, settings.height as f64 / 2.0);
-
-        for i in 0..config.n_sides {
-            let angle = (i as f64 / config.n_sides as f64) * std::f64::consts::PI * 2.0;
-            let x = angle.cos() * config.radius;
-            let y = angle.sin() * config.radius;
-            let node = Node::new_with_position(center + Vec2::new(x, y));
-            nodes.push(node);
-        }
-
+        let nodes = polygon(settings, config)
+            .iter()
+            .map(|p| Node::new_with_position(*p))
+            .collect();
         Self::new(nodes, true)
     }
 }
